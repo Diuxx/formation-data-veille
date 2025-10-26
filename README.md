@@ -8,6 +8,17 @@
 
 > Projet de formation architecture et développement stack js (node + angular)
 
+## Structure
+  - **api/** → backend Node.js
+  - **web/** → frontend Angular
+  - **infra/** → déploiement (Docker, Nginx, scripts)
+
+## Installation
+```bash
+cd api && npm install
+cd web && npm install
+```
+
 ## Author
 
 👤 **Diuxx**
