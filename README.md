@@ -15,7 +15,7 @@
 * Website: nicoblog.dev
 * Twitter: [@Diuxx](https://twitter.com/Diuxx)
 * Github: [@Diuxx](https://github.com/Diuxx)
-* LinkedIn: [@Nicolas Marmot](https://linkedin.com/in/Nicolas Marmot)
+* LinkedIn: [@Nicolas Marmot](https://www.linkedin.com/in/nicolas-marmot-317171161/)
 
 ## Show your support
 
