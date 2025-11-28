@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/database/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("PRISMA_DATABASE_URL")
+}
+
+model AuditLog {
+  id        String  @id @default(lower(hex(randomblob(16))))
+  userId    String?
+  action    String
+  details   String?
+  ipAddress String?
+  trigger   String
+  createdAt String  @default("CURRENT_TIMESTAMP")
+  User      User?   @relation(fields: [userId], references: [id], onUpdate: NoAction)
+}
+
+model Session {
+  id        String  @id @default(lower(hex(randomblob(16))))
+  userId    String
+  createdAt String  @default("CURRENT_TIMESTAMP")
+  expiresAt String
+  userAgent String?
+  ipAddress String?
+  User      User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Token {
+  id        String @id @default(lower(hex(randomblob(16))))
+  userId    String
+  type      String
+  token     String @unique(map: "sqlite_autoindex_Token_2")
+  createdAt String @default("CURRENT_TIMESTAMP")
+  expiresAt String
+  User      User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model User {
+  id           String     @id @default(lower(hex(randomblob(16))))
+  email        String     @unique(map: "sqlite_autoindex_User_2")
+  passwordHash String
+  name         String?
+  role         String     @default("USER")
+  isActive     Int        @default(1)
+  createdAt    String     @default("CURRENT_TIMESTAMP")
+  updatedAt    String
+  deletedAt    String?
+  AuditLog     AuditLog[]
+  Session      Session[]
+  Token        Token[]
+}
