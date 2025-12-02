@@ -1,5 +1,11 @@
 
 import { Router } from 'express';
+import { ActionEvt, RequestMessage } from '../../../utils/utils.js';
+import { audit } from '../../../middlewares/audit-log/audit-log.js';
+import logger from '../../../middlewares/logger.js';
+import { loginSchema } from './auth.schema.js'
+import AuthService from './auth.service.js';
+
 
 const router = Router();
 
@@ -8,9 +14,32 @@ const router = Router();
  * 
  * Authenticates a user and starts a session.
  */
-router.post('/login', async (req, res) => {
-  // Authentication logic here
-  res.status(200).json({ message: 'Login successful' });
+router.post('/login', audit(ActionEvt.AUTHENTICATE), async (req, res) => {
+  try {
+    const parsedBody = await loginSchema.safeParseAsync(req.body);
+    if (!parsedBody.success)
+      return res.status(400).json(
+        { 
+          error: RequestMessage.INVALID_REQUEST_DATA,
+          detail: parsedBody.error.flatten() 
+        });
+  
+    const auth = await AuthService.Authenticate(parsedBody.data, req);
+    if (!auth.success)
+      return res.status(400).json({ 
+        error: RequestMessage.INVALID_CREDENTIALS
+      });
+  
+    // Authentication logic here
+    res.status(200).json({ 
+      message: 'Login successful',
+      data: auth
+    });
+  }
+  catch (error) {
+    logger.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 /**

@@ -34,6 +34,26 @@ export async function cryptPassword(plainPassword, saltRounds = 10) {
   return await bcrypt.hash(plainPassword, saltRounds);
 }
 
+/**
+ * 
+ * @param {*} req 
+ */
+export async function getClientInfo(req) {
+  let ip = 
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    req.socket.remoteAddress ||
+    req.connection?.remoteAddress;
+
+  // transform IPv6 localhost "::1" en "localhost"
+  if (ip === "::1" || ip === "127.0.0.1") {
+    ip = "localhost";
+  }
+
+  const userAgent = req.headers["user-agent"] || "Unknown";
+
+  return { ip, userAgent };
+}
+
 export const ActionEvt = Object.freeze({
   LIST_USERS: 'LIST_USERS',
   GET_USER: 'GET_USER',
@@ -44,8 +64,14 @@ export const ActionEvt = Object.freeze({
   LOGIN: 'LOGIN',
   API_KEY_USED: 'API_KEY_USED',
   SYSTEM_TASK: 'SYSTEM_TASK',
+  AUTHENTICATE: 'AUTHENTICATE'
 });
 
 export const RequestMessage = Object.freeze({
   INVALID_REQUEST_DATA: 'Invalid request data',
+  INVALID_CREDENTIALS: 'Invalid credentials'
 });
+
+export const TokenType = Object.freeze({
+  AUTHENTICATION: 1
+})
