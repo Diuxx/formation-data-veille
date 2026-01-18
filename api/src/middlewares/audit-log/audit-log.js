@@ -37,7 +37,7 @@ export function audit(action, detailsBuilder = null) {
             trigger: trigger,
             ipAddress: req.ip || null,
             details: details,
-            createdAt: date
+            createdAt: date.toISOString()
           }
         });
       }

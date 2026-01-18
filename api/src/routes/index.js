@@ -13,7 +13,7 @@ router.get('/', (_req, res) => res.status(200).json({ message: 'willing to becom
 // Other feature routes imports
 router.use('/health', healthRouter);
 router.use('/users', userRouter);
-router.use('/auth', authRouter);
+router.use('/', authRouter);
 
 
 export default router;
