@@ -4,52 +4,87 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("PRISMA_DATABASE_URL")
 }
 
-model AuditLog {
-  id        String  @id @default(lower(hex(randomblob(16))))
-  userId    String?
-  action    String
-  details   String?
-  ipAddress String?
-  trigger   String
-  createdAt String  @default("CURRENT_TIMESTAMP")
-  User      User?   @relation(fields: [userId], references: [id], onUpdate: NoAction)
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model audit_logs {
+  id        String          @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  userId    String?         @db.Char(36)
+  action    String          @db.VarChar(255)
+  details   String?         @db.LongText
+  ipAddress String?         @db.VarChar(255)
+  type      audit_logs_type
+  createdAt DateTime        @default(now()) @db.DateTime(0)
+  users     users?          @relation(fields: [userId], references: [id], onUpdate: Restrict, map: "fk_audit_user")
+
+  @@index([userId], map: "idx_audit_userId")
 }
 
-model Session {
-  id        String  @id @default(lower(hex(randomblob(16))))
-  userId    String
-  createdAt String  @default("CURRENT_TIMESTAMP")
-  expiresAt String
-  userAgent String?
-  ipAddress String?
-  User      User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model sessions {
+  id        String   @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  userId    String   @db.Char(36)
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  expiresAt DateTime @db.DateTime(0)
+  userAgent String?  @db.VarChar(255)
+  ipAddress String?  @db.VarChar(255)
+  users     users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_sessions_user")
+
+  @@index([userId], map: "idx_sessions_userId")
 }
 
-model Token {
-  id        String @id @default(lower(hex(randomblob(16))))
-  userId    String
-  type      String
-  token     String @unique(map: "sqlite_autoindex_Token_2")
-  createdAt String @default("CURRENT_TIMESTAMP")
-  expiresAt String
-  User      User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tokens {
+  id        String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  userId    String      @db.Char(36)
+  type      tokens_type
+  token     String      @unique(map: "token") @db.VarChar(255)
+  createdAt DateTime    @default(now()) @db.DateTime(0)
+  expiresAt DateTime    @db.DateTime(0)
+  users     users       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_tokens_user")
+
+  @@index([token], map: "idx_tokens_token")
+  @@index([userId], map: "idx_tokens_userId")
 }
 
-model User {
-  id           String     @id @default(lower(hex(randomblob(16))))
-  email        String     @unique(map: "sqlite_autoindex_User_2")
-  passwordHash String
-  name         String?
-  role         String     @default("USER")
-  isActive     Int        @default(1)
-  createdAt    String     @default("CURRENT_TIMESTAMP")
-  updatedAt    String
-  deletedAt    String?
-  AuditLog     AuditLog[]
-  Session      Session[]
-  Token        Token[]
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model users {
+  id           String       @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  email        String       @unique(map: "email") @db.VarChar(255)
+  passwordHash String       @db.VarChar(255)
+  name         String?      @db.VarChar(255)
+  role         users_role   @default(USER)
+  isActive     Boolean      @default(true)
+  createdAt    DateTime     @default(now()) @db.DateTime(0)
+  updatedAt    DateTime     @default(now()) @db.DateTime(0)
+  deletedAt    DateTime?    @db.DateTime(0)
+  audit_logs   audit_logs[]
+  sessions     sessions[]
+  tokens       tokens[]
+}
+
+enum tokens_type {
+  RESET_PASSWORD
+  EMAIL_VERIFICATION
+  API_KEY
+}
+
+enum audit_logs_type {
+  USER
+  SYSTEM
+  CRON
+  WEBHOOK
+  API_INTERNAL
+  API_EXTERNAL
+  SCHEDULED_TASK
+  ANONYMOUS
+  ADMIN_OVERRIDE
+}
+
+enum users_role {
+  USER
+  ADMIN
+  SYSTEM
 }

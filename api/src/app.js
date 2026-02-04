@@ -1,4 +1,3 @@
-import fs from 'fs';
 import express from 'express'; // minimalist web framework. 
 import cors from 'cors'; // allows your api to be accessed by web applications from different origins.
 import helmet from 'helmet'; // helps secure your Express apps by setting various HTTP headers.
@@ -21,11 +20,11 @@ app.use(express.json()); // parse incoming JSON requests.
 app.disable('etag'); // disable caching ressource automatically.
 
 /**
- * Auto-initialize the database if the AUTO_INIT_DB env variable is set to true
- * and the database file does not already exist.
+ * Auto-initialize the database when enabled. For MariaDB/MySQL, this will
+ * create the DB if needed and run the schema script; for other setups,
+ * `initializeDatabase` can be adapted accordingly.
  */
-const dbExists = fs.existsSync(process.env.DATABASE_URL);
-if (process.env.AUTO_INIT_DB === 'true' && !dbExists) {
+if (process.env.AUTO_INIT_DB === 'true') {
   initializeDatabase()
     .catch((err) => console.error('Database initialization failed:', err));
 }

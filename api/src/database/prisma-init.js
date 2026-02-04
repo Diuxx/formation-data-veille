@@ -5,51 +5,64 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-
-import Database from 'better-sqlite3';
 import { v4 as uuidv4 } from 'uuid';
+import mysql from 'mysql2/promise';
 
 
 /**
- * Initializes the SQLite database by creating the database file (if it doesn't exist)
- * and executing the schema SQL script to set up the necessary tables.
+ * Initializes the MariaDB/MySQL database by creating the database if needed
+ * and executing the SQL schema script to set up the necessary tables.
  * @returns {Promise<void>} A promise that resolves when the database is initialized.
  */
 async function initializeDatabase() {
-
-  const dbPath = path.resolve(process.env.DATABASE_URL);;
-  const dir = path.dirname(dbPath);
-
-  // create directory if not exists.
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  const urlStr = process.env.PRISMA_DATABASE_URL;
+  if (!urlStr) {
+    throw new Error('PRISMA_DATABASE_URL is not set');
   }
 
-  if (fs.existsSync(dbPath)) {
-    logger.info('Database file already exists. Skipping initialization.');
-    return;
-  }
+  const url = new URL(urlStr);
+  const host = url.hostname;
+  const port = Number(url.port || 3306);
+  const user = decodeURIComponent(url.username);
+  const password = decodeURIComponent(url.password);
+  const database = url.pathname.replace(/^\//, '');
 
-  const db = new Database(dbPath);
+  // Connect to server without selecting database
+  const conn = await mysql.createConnection({
+    host,
+    port,
+    user,
+    password,
+    multipleStatements: true,
+  });
 
-  // execute schema script.
-  const schema = fs.readFileSync('./src/database/scripts/sqlite_schema.sql', 'utf8');
-  db.exec(schema);
-  db.close();
-
-  // Seed initial accounts
   try {
+    // Check if database exists
+    const [rows] = await conn.query('SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?', [database]);
+    const exists = Array.isArray(rows) && rows.length > 0;
+
+    if (!exists) {
+      await conn.query(`CREATE DATABASE IF NOT EXISTS \`${database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`);
+      await conn.query(`USE \`${database}\`;`);
+
+      // Execute schema script on freshly created database
+      const schema = fs.readFileSync('./src/database/scripts/01_schema.sql', 'utf8');
+      await conn.query(schema);
+      logger.info('Database created and schema applied.');
+    } else {
+      await conn.query(`USE \`${database}\`;`);
+      logger.info('Database exists. Skipping schema script.');
+    }
+
+    // Seed initial accounts and system API key
     await seedAccounts();
     await generateSystemApiKey();
-
-    logger.info('Database initialized and seeded.');
-  }
-  catch (error) {
-    logger.error('Seeding failed during initialization:', error);
-
-    // Clean up corrupted DB
-    fs.rmSync(dbPath, { force: true });
+    logger.info('Seeding completed.');
+  } catch (error) {
+    logger.error('Initialization failed:', error);
     throw error;
+  } finally {
+    await conn.end();
   }
 }
 
@@ -76,7 +89,7 @@ async function seedAccounts() {
   );
 
   // admin account.
-  const admin = await prisma.user.upsert({
+  const admin = await prisma.users.upsert({
     where : { email: adminEmail },
     update: {},
     create: {
@@ -85,14 +98,14 @@ async function seedAccounts() {
       name: 'Administrator',
       passwordHash: adminPasswordHash,
       role: 'ADMIN',
-      isActive: 1,
+      isActive: true,
       createdAt: now.toISOString(),
       updatedAt: now.toISOString()
     },
   });
 
   // system account.
-  const system = await prisma.user.upsert({
+  const system = await prisma.users.upsert({
     where : { email: 'system@local' },
     update: {},
     create: {
@@ -101,7 +114,7 @@ async function seedAccounts() {
       name: 'System',
       passwordHash: systemPasswordHash,
       role: 'SYSTEM',
-      isActive: 1,
+      isActive: true,
       createdAt: now.toISOString(),
       updatedAt: now.toISOString()
     },
@@ -112,7 +125,7 @@ async function seedAccounts() {
 
   // log seeding.
   if (adminCreated || systemCreated) {
-    await prisma.auditLog.create({
+    await prisma.auditLogs.create({
       data: {
         id: uuidv4(),
         userId: system?.id ?? null,
@@ -136,7 +149,7 @@ async function generateSystemApiKey() {
   const now = new Date();
 
   try {
-    const systemUser = await prisma.user.findUnique({
+    const systemUser = await prisma.users.findUnique({
       where: { email: 'system@local' }
     });
   
@@ -144,7 +157,7 @@ async function generateSystemApiKey() {
       throw new Error('System user not found. Cannot generate API key.');
     }
   
-    await prisma.token.create({
+    await prisma.tokens.create({
       data: {
         id: uuidv4(),
         userId: systemUser.id,
