@@ -49,15 +49,17 @@ async function initializeDatabase() {
       const schema = fs.readFileSync('./src/database/scripts/01_schema.sql', 'utf8');
       await conn.query(schema);
       logger.info('Database created and schema applied.');
-    } else {
+      
+      // Seed initial accounts and system API key
+      await seedAccounts();
+      await generateSystemApiKey();
+      logger.info('Seeding completed.');
+    } 
+    else {
       await conn.query(`USE \`${database}\`;`);
       logger.info('Database exists. Skipping schema script.');
     }
 
-    // Seed initial accounts and system API key
-    await seedAccounts();
-    await generateSystemApiKey();
-    logger.info('Seeding completed.');
   } catch (error) {
     logger.error('Initialization failed:', error);
     throw error;

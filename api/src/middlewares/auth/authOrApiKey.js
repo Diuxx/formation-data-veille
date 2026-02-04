@@ -1,5 +1,4 @@
-import { auth } from './auth.js';
-import { apiKeyAuth } from './apiKeyAuth.js';
+import prisma from '../../database/prisma.js';
 
 /**
  * Authenticates the request using either session authentication or API key authentication.
@@ -14,15 +13,78 @@ export async function authOrApiKey(req, res, next) {
   req.apiKey = null;
 
   try {
-    await auth(req, res, () => {}, true);
-    if (req.user) return next();
+    const result = await tryAuthWithApiKey(req);
 
-    await apiKeyAuth(req, res, () => {}, true);
-    if (req.apiKey) return next();
+    if (!result) // if no api key was provided, try session auth
+      await tryAuth(req);
+
+    if (req.user) {
+      return next();
+    }
 
     return res.status(401).json({ error: 'Unauthorized' });
   }
   catch (_) {
-    return res.status(500).json({ error: 'Internal Server Error (Auth)' });
+    const status = _.cause || 500;
+    return res.status(status).json({ error: _.message });
   }  
+}
+
+/**
+ * This middleware authenticates the request using session authentication.
+ * @param {*} req The request object.
+ * @returns sends 401 on failure;
+ */
+export async function tryAuth(req, res) {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    throw new Error('Unauthenticated', { cause: 401 });
+  }
+
+  // Get user session from the database
+  const session = await prisma.sessions.findUnique({
+    where: { id: token },
+    include: { users: true }
+  });
+
+  if (!session || session.expiresAt < new Date()) {
+    throw new Error('Session expired');
+  }
+
+  // -- attach the user to request
+  req.user = session.users;
+}
+
+/**
+ * Authenticates the request using an API key provided in the 'x-api-key' header.
+ * @param {*} req The request object.
+ * @returns sends 401 or 403 on failure;
+ */
+export async function tryAuthWithApiKey(req, res) {
+
+    const apiKey = req.headers['x-api-key'];
+
+    /** its not an api request */
+    if (!apiKey)
+      return false;
+
+    const token = await prisma.tokens.findUnique({
+      where: { token: apiKey },
+      include: { users: true }
+    });
+
+    if (!token) {
+      throw new Error('Invalid API key', { cause: 401 });
+    }
+
+    if (new Date(token.expiresAt) < new Date()) {
+      throw new Error('API Key expired', { cause: 403 });
+    }
+
+    // -- attach token and user to request
+    req.apiKey = token;
+    req.user = token.users;
+
+    return true;
 }

@@ -42,14 +42,18 @@ export async function getClientInfo(req) {
   let ip = 
     req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
     req.socket.remoteAddress ||
-    req.connection?.remoteAddress;
+    req.connection?.remoteAddress ||
+    req.ip ||
+    "unknown";
+
 
   // transform IPv6 localhost "::1" en "localhost"
-  if (ip === "::1" || ip === "127.0.0.1") {
+  if (ip == "::1" || ip == "127.0.0.1") {
     ip = "localhost";
   }
 
   const userAgent = req.headers["user-agent"] || "Unknown";
+  console.log("Client IP detected:", ip, userAgent);
 
   return { ip, userAgent };
 }

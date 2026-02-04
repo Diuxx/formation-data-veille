@@ -16,13 +16,13 @@ export default class AuthService {
     const { ip, userAgent } = getClientInfo(req);
 
     // auth
-    const user = await prisma.user.findUnique({ 
+    const user = await prisma.users.findUnique({ 
       where: { email: email }
     });
     if (!user)
       return { success: false };
 
-    console.log( password, user.passwordHash)
+    console.log( password, users.passwordHash)
     const match = await bcrypt.compare(password, user.passwordHash);
     console.log(match);
     if (!match)
@@ -33,7 +33,7 @@ export default class AuthService {
     const createdAt = new Date();
     console.table({ auth: true, expiresAt: expiresAt, createdAt: createdAt, ip: ip, userAgent: userAgent });
 
-    const session = await prisma.session.create({
+    const session = await prisma.sessions.create({
       data: {
         id: uuidv4(),
         userId: user.id,
@@ -46,7 +46,7 @@ export default class AuthService {
 
     // Create user token
     const tokenValue = crypto.randomUUID();
-    const token = prisma.token.create({
+    const token = prisma.tokens.create({
       data: {
         id: uuidv4(),
         sessionId: session.id,

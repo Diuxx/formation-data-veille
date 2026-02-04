@@ -1,19 +1,19 @@
 import prisma from '../../database/prisma.js';
 import logger from '../logger.js';
+import { getClientInfo } from '../../utils/utils.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export function audit(action, detailsBuilder = null) {
   return async (req, res, next) => {
     res.on('finish', async () => {
+      logger.info(`Audit log middleware triggered for action: ${action}`);
+
       try {
         // --
-        const userId =
-          req.user?.id ??
-          null;
-
         const trigger = req.user ? (req.user.role == 'SYSTEM' ? 'SYSTEM' : 'USER') : 'ANONYMOUS';
         const date = new Date();
-
+        const { ip, userAgent } = await getClientInfo(req);
+        
         let details = null;
         if (typeof detailsBuilder === 'function') {
           try {
@@ -29,14 +29,14 @@ export function audit(action, detailsBuilder = null) {
           });
         }
 
-        await prisma.auditLog.create({
+        await prisma.audit_logs.create({
           data: {
             id: uuidv4(),
-            userId: userId,
+            users: { connect: { id: req.user?.id ?? null } },
             action: action,
-            trigger: trigger,
-            ipAddress: req.ip || null,
+            ipAddress: ip || null,
             details: details,
+            type: trigger,
             createdAt: date.toISOString()
           }
         });

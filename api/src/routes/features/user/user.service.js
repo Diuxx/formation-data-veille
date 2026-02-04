@@ -12,7 +12,7 @@ export default class UserService {
    * @returns A list of all users.
    */
   static async getAll() {
-    return await prisma.user.findMany();
+    return await prisma.users.findMany();
   }
 
   /**
@@ -21,7 +21,7 @@ export default class UserService {
    * @returns The user object if found, otherwise null.
    */
   static async getById(userId) {
-    return await prisma.user.findUnique({
+    return await prisma.users.findUnique({
       where: { id: userId }
     });
   }
@@ -38,7 +38,7 @@ export default class UserService {
     }
 
     delete updateData.password; // Remove plain password from update data, does not exist in DB.
-    return await prisma.user.update({
+    return await prisma.users.update({
       where: { id: userId },
       data: updateData
     });
@@ -58,7 +58,7 @@ export default class UserService {
     }
 
     delete userData.password; // Remove plain password from update data, does not exist in DB.
-    return await prisma.user.create({
+    return await prisma.users.create({
       data: {
         id: uuidv4(),
         ...userData,
@@ -74,7 +74,7 @@ export default class UserService {
    * @returns deleted user object.
    */
   static async deleteUser(userId) {
-    return await prisma.user.delete({
+    return await prisma.users.delete({
       where: { id: userId }
     });
   }

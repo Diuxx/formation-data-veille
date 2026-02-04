@@ -1,7 +1,6 @@
 
 import { Router } from 'express';
 import { authOrApiKey } from '../../../middlewares/auth/authOrApiKey.js';
-import { auth } from '../../../middlewares/auth/auth.js';
 import { isAdmin } from '../../../middlewares/isAdmin.js';
 import UserService from './user.service.js';
 import logger from '../../../middlewares/logger.js';
