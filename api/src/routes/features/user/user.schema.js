@@ -11,7 +11,7 @@ export const createUserSchema = z
   })
   .superRefine(async (data, ctx) => {
     if (data.email) {
-      const exists = await prisma.user.findUnique({
+      const exists = await prisma.users.findUnique({
         where: { email: data.email }
       });
   
@@ -35,7 +35,7 @@ export const updateUserSchema = z
   })
   .superRefine(async (data, ctx) => {
     if (data.email) {
-      const exists = await prisma.user.findUnique({
+      const exists = await prisma.users.findUnique({
         where: { email: data.email }
       });
 

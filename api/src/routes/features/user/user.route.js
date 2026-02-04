@@ -75,8 +75,8 @@ router.post('/', authOrApiKey, isAdmin, audit(ActionEvt.CREATE_USER), async (req
       data: user
     });
   } catch (error) {
-    logger.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    logger.error(error.message);
+    return res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 });
 
@@ -105,7 +105,7 @@ router.put('/:id', authOrApiKey, isAdmin, audit(ActionEvt.UPDATE_USER), async (r
   }
   catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 });
 
