@@ -30,30 +30,51 @@ export async function authOrApiKey(req, res, next) {
   }  
 }
 
-/**
- * This middleware authenticates the request using session authentication.
- * @param {*} req The request object.
- * @returns sends 401 on failure;
- */
-export async function tryAuth(req, res) {
-  const token = req.headers.authorization?.split(' ')[1];
+export async function optionalAuth(req, res, next) {
+  req.user = null;
+  req.apiKey = null;
+  try {
+    const result = await tryAuthWithApiKey(req);
+    if (!result) {
+      await tryAuth(req);
+    }
 
-  if (!token) {
-    throw new Error('Unauthenticated', { cause: 401 });
+    return next();
+  }
+  catch (error) {
+    logger.error(error);
+    return next();
+  }
+}
+
+/**
+ * Try to authenticate a request using session cookie.
+ * Attaches req.user and req.session if valid.
+ * Never sends a response.
+ */
+export async function tryAuth(req) {
+  console.log('cookies:', req.cookies);
+
+  const sessionId = req.cookies?.session_id;
+
+  if (!sessionId) {
+    return false;
   }
 
-  // Get user session from the database
   const session = await prisma.sessions.findUnique({
-    where: { id: token },
-    include: { users: true }
+    where: { id: sessionId },
+    include: { users: true },
   });
 
   if (!session || session.expiresAt < new Date()) {
-    throw new Error('Session expired');
+    return false;
   }
 
-  // -- attach the user to request
+  // attach context
   req.user = session.users;
+  req.session = session;
+
+  return true;
 }
 
 /**

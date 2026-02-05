@@ -68,7 +68,8 @@ export const ActionEvt = Object.freeze({
   LOGIN: 'LOGIN',
   API_KEY_USED: 'API_KEY_USED',
   SYSTEM_TASK: 'SYSTEM_TASK',
-  AUTHENTICATE: 'AUTHENTICATE'
+  AUTHENTICATE: 'AUTHENTICATE',
+  LOGOUT: 'LOGOUT',
 });
 
 export const RequestMessage = Object.freeze({

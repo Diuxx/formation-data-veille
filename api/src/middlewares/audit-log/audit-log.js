@@ -29,15 +29,21 @@ export function audit(action, detailsBuilder = null) {
           });
         }
 
+        let logData = {
+          id: uuidv4(),
+          action: action,
+          ipAddress: ip || null,
+          details: details,
+          type: trigger,
+          createdAt: date.toISOString()
+        }
+
+        if (req.user?.id) 
+          logData = { ...logData, users: { connect: { id: req.user?.id ?? null } } };
+
         await prisma.audit_logs.create({
           data: {
-            id: uuidv4(),
-            users: { connect: { id: req.user?.id ?? null } },
-            action: action,
-            ipAddress: ip || null,
-            details: details,
-            type: trigger,
-            createdAt: date.toISOString()
+            ...logData,
           }
         });
       }

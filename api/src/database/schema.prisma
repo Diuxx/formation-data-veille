@@ -65,12 +65,6 @@ model users {
   tokens       tokens[]
 }
 
-enum tokens_type {
-  RESET_PASSWORD
-  EMAIL_VERIFICATION
-  API_KEY
-}
-
 enum audit_logs_type {
   USER
   SYSTEM
@@ -87,4 +81,11 @@ enum users_role {
   USER
   ADMIN
   SYSTEM
+}
+
+enum tokens_type {
+  AUTHENTICATION
+  RESET_PASSWORD
+  EMAIL_VERIFICATION
+  API_KEY
 }
