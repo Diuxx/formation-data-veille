@@ -1,0 +1,36 @@
+
+.row {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.gap-5 {
+    gap: 5px;
+}
+.gap-10 {
+    gap: 10px;
+}
+.gap-15 {
+    gap: 15px;
+}
+
+.center-block {
+    width: 100%;
+    min-height: 85vh;
+    text-align: center;
+}
+
+.right-block {
+    max-width: 350px;
+}

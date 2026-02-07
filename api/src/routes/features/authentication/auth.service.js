@@ -67,15 +67,15 @@ export default class AuthService {
    * Logout by invalidating session and deleting related auth tokens.
    * @param {{sessionId:string}} payload
    */
-  static async Logout(session) {
-    const { sessionId } = session.id;
-    if (!sessionId) return { success: false };
+  static async Logout(sessionId) {
+    if (!sessionId) 
+      return { success: false };
 
-    const sess = await prisma.sessions.findUnique({ where: { id: sessionId } });
-    if (!sess) return { success: false };
+    const session = await prisma.sessions.findUnique({ where: { id: sessionId } });
+    if (!session) return { success: false };
 
     await prisma.$transaction([
-      prisma.sessions.delete({ where: { id: sessionId } }),
+      prisma.sessions.delete({ where: { id: session.id } }),
     ]);
 
     return { success: true };

@@ -1,0 +1,47 @@
+
+html, body { height: 100%; }
+
+.th-white {
+    --main-bg-color: var(--app-white);
+    --main-fg-color: var(--app-black-soft);
+
+    --highlight-color: var(--app-blue);
+    --link-color: var(--app-blue);
+    --link-hover-color: var(--app-blue-1);
+}
+
+.th-black {
+    --main-bg-color: var(--app-black-soft);
+    --main-fg-color: var(--app-white);
+
+    --highlight-color: var(--app-green);
+    --link-color: var(--app-green);
+    --link-hover-color: var(--app-green-1);
+}
+
+body {
+    color: var(--main-fg-color);
+    background-color: var(--main-bg-color);
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+}
+
+p {
+    margin: 0;
+}
+
+a,
+a:visited,
+a:hover {
+    color: var(--link-color);
+    text-decoration: none;
+}
+a:hover {
+    color: var(--link-hover-color);
+}
+
+div {
+    // border: 1px black solid;
+}

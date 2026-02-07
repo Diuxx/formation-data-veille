@@ -1,0 +1,46 @@
+
+:root {
+
+    --app-background: #fff;
+    --app-header-background: #fff;
+    --app-header-border: 1px solid rgb(218, 220, 224);
+    --app-text-color: #444746;
+
+
+    --app-white: #eee;
+    --app-white-soft: rgba(245, 245, 245);
+    --app-white-soft-2: rgba(200, 200, 200);
+    --app-white-mute: #B0B4BA;
+
+    --app-black: #181818;
+    --app-black-soft: #323232;
+    --app-black-mute: #4C4C4C;
+
+    --app-indigo: #2c3e50;
+
+    --app-yellow: #F39C12;
+    --app-yellow-1: #D58910;
+
+    --app-green: #16A085;
+    --app-green-1: #138C74;
+
+    --app-red: #A01631;
+    --app-red-1: #8C132B;
+
+    --app-blue: #2980B9;
+    --app-blue-1: #1F608B;
+
+    --app-divider-light-1: rgba(60, 60, 60, 0.29);
+    --app-divider-light-2: rgba(60, 60, 60, 0.12);
+    --app-divider-dark-1: rgba(84, 84, 84, 0.65);
+    --app-divider-dark-2: rgba(84, 84, 84, 0.48);
+
+    --app-text-light-1: var(--app-indigo);
+    --app-text-light-2: rgba(60, 60, 60, 0.66);
+    --app-text-dark-1: var(--app-white);
+    --app-text-dark-2: rgba(235, 235, 235, 0.64);
+    --box-shadow: 0 1px 2px hsla(0,0%,0%,0.05),0 1px 4px hsla(0,0%,0%,0.05),0 2px 8px hsla(0,0%,0%,0.05);
+    
+    --limit-width: 1000px;
+    $limit-width: 1000px;
+}

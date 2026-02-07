@@ -85,7 +85,8 @@ router.post('/login', audit(ActionEvt.AUTHENTICATE), async (req, res) => {
  */
 router.post('/logout', authOrApiKey, audit(ActionEvt.LOGOUT), async (req, res) => {
   try {
-    const result = await AuthService.Logout(req.session);
+    const result = await AuthService.Logout(req.cookies?.session_id);
+
     if (!result.success) {
       return res.status(400).json({ error: RequestMessage.INVALID_REQUEST_DATA });
     }

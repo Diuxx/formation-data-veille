@@ -1,0 +1,16 @@
+
+
+:host {
+  display: flex;
+  border-bottom: var(--app-header-border);
+  background-color: var(--app-header-background);
+  color: var(--app-text-color);
+  height: 90px;
+
+  .top-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
