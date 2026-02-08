@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from 'app/core/auth/services/auth.service';
 import { AuthStore } from 'app/core/auth/auth.store';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -29,6 +30,7 @@ export class Login {
   private auth = inject(AuthService);
   private store = inject(AuthStore);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   // variables
   public hidePassword = true;
@@ -51,7 +53,10 @@ export class Login {
     this.serverError = null;
     this.loading = true;
 
-    this.auth.login(this.form.getRawValue()).subscribe({
+    this.auth.login(this.form.getRawValue()).pipe(finalize(() => {
+      this.loading = false;
+      this.cdr.markForCheck();
+    })).subscribe({
       next: user => {
         this.store.setUser(user);
         this.router.navigate(['/home']);
@@ -74,11 +79,6 @@ export class Login {
         }
         
         this.form.setErrors({ auth: true }); // Optionally mark form as having an error
-        this.loading = false;
-      },
-      complete: () => {
-        console.log('complete');
-        this.loading = false;
       }
     });
   }

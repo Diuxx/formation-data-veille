@@ -5,50 +5,80 @@
       La meilleure façon d'apprendre c'est les templates
     </p>
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <mat-form-field appearance="outline">
-        <mat-label>E-mail</mat-label>
-        <input matInput type="email" formControlName="email" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Mot de passe</mat-label>
-        <input
-          matInput
-          [type]="hidePassword ? 'password' : 'text'"
-          formControlName="password"
-        />
-
+    @if (!created) {
+      @if (serverError) {
+        <div class="form-error" role="alert" aria-live="polite">
+          {{ serverError }}
+        </div>
+      }
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+          <mat-label>E-mail</mat-label>
+          <input matInput type="email" formControlName="email" />
+          @if (form.controls.email.hasError('required')) {
+            <mat-error>L'e-mail est requis.</mat-error>
+          } @else if (form.controls.email.hasError('email')) {
+            <mat-error>Format d'e-mail invalide.</mat-error>
+          }
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Mot de passe</mat-label>
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+          />
+  
+          <button
+            mat-button
+            matSuffix
+            type="button"
+            class="show-btn"
+            (click)="hidePassword = !hidePassword"
+          >
+            {{ hidePassword ? 'voir' : 'cacher' }}
+          </button>
+          @if (form.controls.password.hasError('required')) {
+            <mat-error>Le mot de passe est requis.</mat-error>
+          } 
+          @else if (form.controls.password.hasError('minlength')) {
+            <mat-error>Le mot de passe doit contenir au moins 8 caractères.</mat-error>
+          }
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Confirmer le mot de passe</mat-label>
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="confirmPassword"
+          />
+          @if (form.controls.confirmPassword.hasError('required')) {
+            <mat-error>La confirmation du mot de passe est requise.</mat-error>
+          }
+          @else if (form.hasError('passwordsDontMatch')) {
+            <mat-error>Les mots de passe ne correspondent pas.</mat-error>
+          }
+        </mat-form-field>
+  
         <button
-          mat-button
-          matSuffix
-          type="button"
-          class="show-btn"
-          (click)="hidePassword = !hidePassword"
+          matButton="filled"
+          color="primary"
+          class="primary-btn"
+          type="submit"
+          [disabled]="loading || form.invalid"
         >
-          {{ hidePassword ? 'voir' : 'cacher' }}
+          {{ loading ? 'Chargement…' : 'Créer un compte' }}
         </button>
-      </mat-form-field>
+      </form>
+    } 
+    @else {
+      <div class="form-success" style="text-align: center;font-weight: bold;" role="alert" aria-live="polite">
+        Compte crée avec succes.
+      </div>
+    }
 
-      <mat-form-field appearance="outline">
-        <mat-label>Confirmer le mot de passe</mat-label>
-        <input
-          matInput
-          [type]="hidePassword ? 'password' : 'text'"
-          formControlName="confirmPassword"
-        />
-      </mat-form-field>
-
-      <button
-        matButton="filled"
-        color="primary"
-        class="primary-btn"
-        type="submit"
-        [disabled]="form.invalid"
-      >
-        Create account
-      </button>
-    </form>
   </mat-card>
   <div class="auth-switch">
     Vous avez déjà un compte? <a routerLink="/auth/login">Se connecter</a>

@@ -67,3 +67,15 @@ mat-card.auth-card {
         text-decoration: none;
     }
 }
+
+.form-error {
+  margin: 0.5rem 0 1rem;
+  color: var(--app-form-err-color);
+  font-size: 0.95rem;
+}
+
+.form-success {
+  margin: 0.5rem 0 1rem;
+  color: var(--app-form-success-color);
+  font-size: 0.95rem;
+}

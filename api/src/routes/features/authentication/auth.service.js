@@ -88,16 +88,17 @@ export default class AuthService {
   static async register(payload) {
     const exists = await prisma.users.findUnique({ where: { email: payload.email } });
     if (exists) {
-      return null;
+      return false;
     }
 
     const now = new Date().toISOString();
     const passwordHash = await bcrypt.hash(payload.password, 10);
+    const name = payload.email.split('@')[0];
     const user = await prisma.users.create({
       data: {
         id: uuidv4(),
         email: payload.email,
-        name: payload.fullName,
+        name: name,
         passwordHash,
         role: 'USER',
         isActive: true,

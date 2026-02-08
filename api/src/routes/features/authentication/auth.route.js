@@ -154,7 +154,7 @@ router.post('/register', async (req, res) => {
         });
     }
 
-    const user = await AuthService.register(result.data);
+    const user = await AuthService.register(parsedBody.data);
     if (!user) {
       return res.status(409).json({ error: 'Email already in use' });
     }
