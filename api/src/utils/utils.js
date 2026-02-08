@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import nodemailer from "nodemailer";
 
 /**
  * Add days to a date.
@@ -46,7 +47,6 @@ export async function getClientInfo(req) {
     req.ip ||
     "unknown";
 
-
   // transform IPv6 localhost "::1" en "localhost"
   if (ip == "::1" || ip == "127.0.0.1") {
     ip = "localhost";
@@ -75,7 +75,8 @@ export const ActionEvt = Object.freeze({
 export const RequestMessage = Object.freeze({
   SERVER_ERROR: 'Internal Server Error',
   INVALID_REQUEST_DATA: 'Invalid request data',
-  INVALID_CREDENTIALS: 'Invalid credentials'
+  INVALID_CREDENTIALS: 'Invalid credentials',
+  INVALID_TOKEN: 'Invalid or expired token'
 });
 
 export const TokenType = Object.freeze({

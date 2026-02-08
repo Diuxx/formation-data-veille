@@ -1,35 +1,92 @@
 <div class="auth-wrapper">
-  <mat-card class="auth-card">
-    @if (!submitted) {
-      <h1 class="title">Mot de passe oublié</h1>
-      <p class="subtitle">
-        Réinitialiser votre mot de passe
-      </p>
+  @if (!token) {
+    <mat-card class="auth-card">
+      @if (!submitted) {
+        <h1 class="title">Mot de passe oublié</h1>
+        <p class="subtitle">
+          Réinitialiser votre mot de passe
+        </p>
+  
+        @if (serverError) {
+          <div class="form-error" role="alert" aria-live="polite">
+            {{ serverError }}
+          </div>
+        }
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <mat-form-field appearance="outline">
+            <mat-label>E-mail</mat-label>
+            <input matInput type="email" formControlName="email" />
+            @if (form.controls['email'].hasError('required')) {
+              <mat-error>L'e-mail est requis.</mat-error>
+            }
+            @else if (form.controls['email'].hasError('email')) {
+              <mat-error>Format d'e-mail invalide.</mat-error>
+            }
+          </mat-form-field>
+  
+          <button
+            mat-button
+            color="primary"
+            class="primary-btn"
+            type="submit"
+            [disabled]="loading || form.invalid"
+          >
+            Envoyer
+          </button>
+        </form>
+  
+      } @else {
+        <h1 class="title">Vérifier votre boite mail</h1>
+        <p class="message">
+          Si un compte est associé à cette adresse e-mail, un lien de réinitialisation vous sera envoyé prochainement.
+        </p>
+      }
+    </mat-card>
+  }
+  @else {
+    <mat-card class="auth-card">
+      @if (!submitted) {
+        <h1 class="title">Changer le mot de passe</h1>
+        <p class="subtitle">
+          Définissez votre nouveau mot de passe
+        </p>
 
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <mat-form-field appearance="outline">
-          <mat-label>E-mail</mat-label>
-          <input matInput type="email" formControlName="email" />
-        </mat-form-field>
+        @if (serverError) {
+          <div class="form-error" role="alert" aria-live="polite">
+            {{ serverError }}
+          </div>
+        }
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <mat-form-field appearance="outline">
+            <mat-label>Nouveau mot de passe</mat-label>
+            <input matInput type="password" formControlName="password" />
+            @if (form.controls['password'].hasError('required')) {
+              <mat-error>Le mot de passe est requis.</mat-error>
+            }
+            @else if (form.controls['password'].hasError('minlength')) {
+              <mat-error>Le mot de passe doit contenir au moins 8 caractères.</mat-error>
+            }
+          </mat-form-field>
 
-        <button
-          mat-button
-          color="primary"
-          class="primary-btn"
-          type="submit"
-          [disabled]="form.invalid"
-        >
-          Envoyer
-        </button>
-      </form>
-
-    } @else {
-      <h1 class="title">Verifier votre boite mail</h1>
-      <p class="subtitle">
-        Si un compte est associé à cette adresse e-mail, un lien de réinitialisation vous sera envoyé prochainement.
-      </p>
-    }
-  </mat-card>
+          <button
+            mat-button
+            color="primary"
+            class="primary-btn"
+            type="submit"
+            [disabled]="loading || form.invalid"
+          >
+            Valider
+          </button>
+        </form>
+      }
+      @else {
+        <h1 class="title">Mot de passe mis à jour</h1>
+        <p class="message">
+          Votre mot de passe a été changé. Vous pouvez maintenant vous connecter.
+        </p>
+      }
+    </mat-card>
+  }
   <div class="auth-switch">
     S'authentifier? <a routerLink="/auth/login">S'authentifier</a>
   </div>

@@ -3,9 +3,8 @@ import { Router } from 'express';
 import { ActionEvt, RequestMessage } from '../../../utils/utils.js';
 import { audit } from '../../../middlewares/audit-log/audit-log.js';
 import logger from '../../../middlewares/logger.js';
-import { loginSchema, registerSchema } from './auth.schema.js'
+import { loginSchema, registerSchema, forgotPwdSchema, resetPwdSchema } from './auth.schema.js'
 import AuthService from './auth.service.js';
-import { isAuthenticate } from '../../../middlewares/auth/isAuthenticated.js';
 import { authOrApiKey } from '../../../middlewares/auth/authOrApiKey.js';
 
 
@@ -173,6 +172,85 @@ router.post('/register', async (req, res) => {
   }
 });
 
+/**
+ * 
+ */
+router.post("/reset-password", async (req, res) => {
+  try {
+    const parsedBody = await resetPwdSchema.safeParseAsync(req.body);
+    if (!parsedBody.success) {
+      return res.status(400).json({ 
+          error: {
+            code: 'INVALID_REQUEST_DATA',
+            message: RequestMessage.INVALID_REQUEST_DATA,
+            detail: parsedBody.error.flatten() 
+          }
+        });
+    }
+    // --
+    const result = await AuthService.resetPassword(parsedBody.data);
+    if (!result) {
+      return res.status(400).json({
+        error: {
+          code: 'INVALID_TOKEN',
+          message: RequestMessage.INVALID_TOKEN,
+        }
+      });
+    }
+
+    res.status(200).json({ message: "password has been resets" })
+  }
+  catch (error) {
+    logger.error(error);
+    return res.status(500).json({ 
+      error: {
+        code: 'SERVER_ERROR',
+        message: RequestMessage.SERVER_ERROR,
+        detail: {}
+      }
+    });
+  }
+})
+
+/**
+ * 
+ */
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const parsedBody = await forgotPwdSchema.safeParseAsync(req.body);
+    if (!parsedBody.success) {
+      return res.status(400).json({ 
+          error: {
+            code: 'INVALID_REQUEST_DATA',
+            message: RequestMessage.INVALID_REQUEST_DATA,
+            detail: parsedBody.error.flatten() 
+          }
+        });
+    }
+    // --
+    const result = await AuthService.remindPassword(parsedBody.data);
+    if (!result) {
+      return res.status(400).json({
+        error: {
+          code: 'INVALID_REQUEST_DATA',
+          message: RequestMessage.INVALID_REQUEST_DATA,
+        }
+      })
+    }
+
+    res.status(200).json({ message: "email has been sent." });
+  }
+  catch (error) {
+    logger.error(error);
+    return res.status(500).json({ 
+      error: {
+        code: 'SERVER_ERROR',
+        message: RequestMessage.SERVER_ERROR,
+        detail: {}
+      }
+    });
+  }
+})
 
 
 export default router;

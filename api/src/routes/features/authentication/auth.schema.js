@@ -10,3 +10,12 @@ export const registerSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters long"),
   // fullName: z.string().min(4, "Name must be at least 4 characters long").max(100)
 });
+
+export const forgotPwdSchema = z.object({
+  email: z.email("Invalid email address")
+});
+
+export const resetPwdSchema = z.object({
+  token: z.string(),
+  password: z.string().min(8, "Password must be at least 8 characters long"),
+})

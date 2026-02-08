@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import { getClientInfo } from "../../../utils/utils.js";
+import { sendEmail } from "../../../services/mail.service.js";
+import { cryptPassword } from "../../../utils/utils.js";
 
 export default class AuthService {
 
@@ -110,6 +112,86 @@ export default class AuthService {
   }
 
   /**
+   * Reset the user password.
+   * @param {*} payload 
+   */
+  static async resetPassword(payload) {
+    const token = await prisma.tokens.findFirst(
+      { 
+        where: { 
+          token: payload.token,
+          expiresAt: { gt: new Date() }
+        }, 
+        include: { users: true },
+      });
+
+    if (!token) return false;
+
+    const hash = await cryptPassword(payload.password, 10);
+    await prisma.$transaction([
+      prisma.users.update({ where: { id: token.users.id }, data: { passwordHash: hash } }),
+      prisma.tokens.delete({ where: { id: token.id } }),
+      prisma.sessions.deleteMany({ where: { userId: token.users.id } })
+    ]);
+
+    return true;
+  }
+
+  /**
+   * Send a reset link to the user.
+   * @param {*} payload 
+   */
+  static async remindPassword(payload) {
+    const user = await prisma.users.findUnique({ where: { email: payload.email } });
+    if (!user) {
+      return false;
+    }
+
+    const token = this.generateToken();
+    const createdAt = new Date();
+    const expiresAt = new Date(createdAt.getTime() + 1000 * 60 * 15);
+    const id = uuidv4();
+
+    await prisma.tokens.create({
+      data: {
+        id: uuidv4(),
+        userId: user.id,
+        type: 'RESET_PASSWORD',
+        token: token,
+        createdAt: createdAt.toISOString(),
+        expiresAt: expiresAt.toISOString(),
+      },
+    });
+
+    const link = `${process.env.FRONT_URL}${token}`;
+    const result = await sendEmail({
+      to: user.email,
+      title: "Reset password",
+      subject: "Reset your password",
+      html:   `
+        <p>Tu as demandé une réinitialisation.</p>
+        <a href="${link}">Changer mon mot de passe</a>
+        <p>Si ce n'était pas toi, ignore ce message.</p>
+      `
+    });
+    if (!result) {
+      await prisma.tokens.delete({ where: { id: id } })
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Generate a reset token.
+   * @returns 
+   */
+  static generateToken() {
+    const token = crypto.randomBytes(32).toString("hex");
+    return crypto.createHash("sha256").update(token).digest("hex");
+  }
+
+  /**
    * Deletes all expired sessions. Should be called periodically (e.g. on a schedule) to clean up the database.
    */
   static async lazyCleanupSessions() {
@@ -117,6 +199,18 @@ export default class AuthService {
     await prisma.sessions.deleteMany({
       where: {
         expiresAt: { lt: now }
+      }
+    });
+  }
+
+  /**
+   * Reset all session for the user.
+   * @param {*} userId 
+   */
+  static async resetAllSessions(userId) {
+    await prisma.sessions.deleteMany({
+      where: {
+        userId: userId
       }
     });
   }

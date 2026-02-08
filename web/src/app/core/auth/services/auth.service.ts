@@ -39,6 +39,18 @@ export class AuthService {
    */
   public resetPassword(payload: { email: string; }) {
     return this.http.post(
+      `${this.apiUrl}/forgot-password`,
+      payload,
+      { withCredentials: true }
+    );
+  }
+
+  /**
+   * Change effectively the password.
+   * @param payload 
+   */
+  public changePassword(payload: { token: string; password: string; }) {
+    return this.http.post(
       `${this.apiUrl}/reset-password`,
       payload,
       { withCredentials: true }
