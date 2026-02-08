@@ -24,7 +24,7 @@ import { AuthStore } from 'app/core/auth/auth.store';
   templateUrl: './reset.component.html',
   styleUrls: ['./reset.component.scss'],
 })
-export class ResetPasswordComponent {
+export class ResetPassword {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
 

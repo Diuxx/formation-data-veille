@@ -18,7 +18,8 @@
     "paths": {
       "@layouts/*": ["app/layouts/*"],
       "@features/*": ["app/features/*"],
-      "@shared/*": ["app/core/shared/*"]
+      "@shared/*": ["app/core/shared/*"],
+      "@assets/*": ["assets/"]
     }
   },
   "angularCompilerOptions": {

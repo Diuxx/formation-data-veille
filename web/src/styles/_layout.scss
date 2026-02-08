@@ -35,10 +35,9 @@
     max-width: 350px;
 }
 
-
 /* auth */
 .auth-wrapper {
-  min-height: 100vh;
+  min-height: var(--min-height);
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,14 +1,15 @@
 <div class="auth-wrapper">
   <mat-card class="auth-card">
     @if (!submitted) {
-      <h1 class="title">Reset password</h1>
+      <h1 class="title">Mot de passe oublié</h1>
       <p class="subtitle">
-        Enter your email and we'll send you a reset link.
+        Réinitialiser votre mot de passe
+        <!-- Enter your email and we'll send you a reset link. -->
       </p>
 
       <form [formGroup]="form" (ngSubmit)="submit()">
         <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
+          <mat-label>E-mail</mat-label>
           <input matInput type="email" formControlName="email" />
         </mat-form-field>
 
@@ -19,28 +20,18 @@
           type="submit"
           [disabled]="form.invalid"
         >
-          Send reset link
+          Envoyer
         </button>
       </form>
 
-      <p class="switch">
-        Remember your password?
-        <a routerLink="/auth/login">Sign in</a>
-      </p>
     } @else {
-      <h1 class="title">Check your inbox</h1>
+      <h1 class="title">Verifier votre boite mail</h1>
       <p class="subtitle">
-        If an account exists for this email, you'll receive a reset link shortly.
+        Si un compte est associé à cette adresse e-mail, un lien de réinitialisation vous sera envoyé prochainement.
       </p>
-
-      <button
-        mat-stroked-button
-        color="primary"
-        class="primary-btn"
-        routerLink="/auth/login"
-      >
-        Back to sign in
-      </button>
     }
   </mat-card>
+  <div class="auth-switch">
+    S'authentifier? <a routerLink="/auth/login">S'authentifier</a>
+  </div>
 </div>
