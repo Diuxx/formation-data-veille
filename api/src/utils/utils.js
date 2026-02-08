@@ -73,6 +73,7 @@ export const ActionEvt = Object.freeze({
 });
 
 export const RequestMessage = Object.freeze({
+  SERVER_ERROR: 'Internal Server Error',
   INVALID_REQUEST_DATA: 'Invalid request data',
   INVALID_CREDENTIALS: 'Invalid credentials'
 });

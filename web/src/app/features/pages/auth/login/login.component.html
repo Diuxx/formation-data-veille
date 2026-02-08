@@ -5,10 +5,22 @@
       La meilleure façon d'apprendre c'est les templates
     </p>
 
+    @if (serverError) {
+      <div class="form-error" role="alert" aria-live="polite">
+        {{ serverError }}
+      </div>      
+    }
+
     <form [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field appearance="outline">
         <mat-label>E-mail</mat-label>
         <input matInput type="email" formControlName="email" />
+        @if (form.controls.email.hasError('required')) {
+          <mat-error>L'e-mail est requis.</mat-error>
+        }
+        @else if (form.controls.email.hasError('email')) {
+          <mat-error>Format d'e-mail invalide.</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
@@ -28,6 +40,12 @@
         >
           {{ hidePassword ? 'voir' : 'cacher' }}
         </button>
+        @if (form.controls.password.hasError('required')) {
+          <mat-error>Le mot de passe est requis.</mat-error>
+        }
+        @else if (form.controls.password.hasError('minlength')) {
+          <mat-error>Le mot de passe doit contenir au moins 6 caractères.</mat-error>
+        }
       </mat-form-field>
 
       <a class="forgot" routerLink="/auth/reset">
@@ -39,8 +57,8 @@
         color="secondary"
         class="primary-btn"
         type="submit"
-      >
-        Connexion
+        [disabled]="loading || form.invalid">
+        {{ loading ? 'Chargement…' : 'Connexion' }}
       </button>
     </form>
 

@@ -30,7 +30,10 @@ export class Login {
   private store = inject(AuthStore);
   private router = inject(Router);
 
-  hidePassword = true;
+  // variables
+  public hidePassword = true;
+  public loading = false;
+  public serverError: string | null = null;
 
   form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -44,11 +47,39 @@ export class Login {
   public submit(): void {
     if (this.form.invalid) return;
 
+    // Reset previous error and mark as loading
+    this.serverError = null;
+    this.loading = true;
+
     this.auth.login(this.form.getRawValue()).subscribe({
       next: user => {
         this.store.setUser(user);
         this.router.navigate(['/home']);
       },
+      error: (err) => {
+        // Basic error mapping based on HTTP status
+        const status = err?.status;
+        const message = err?.error?.message || err?.message;
+
+        if (status === 400) {
+          this.serverError = "Requête invalide. Vérifiez vos informations.";
+        } else if (status === 401) {
+          this.serverError = "Identifiants incorrects. Veuillez réessayer.";
+        } else if (status === 429) {
+          this.serverError = "Trop de tentatives. Réessayez plus tard.";
+        } else if (status >= 500) {
+          this.serverError = "Erreur serveur. Réessayez ultérieurement.";
+        } else {
+          this.serverError = message || "Une erreur est survenue.";
+        }
+        
+        this.form.setErrors({ auth: true }); // Optionally mark form as having an error
+        this.loading = false;
+      },
+      complete: () => {
+        console.log('complete');
+        this.loading = false;
+      }
     });
   }
 }

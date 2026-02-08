@@ -27,13 +27,19 @@ router.get('/check', authOrApiKey, async (req, res) => {
           role: req.user.role,
         }
       });
-    } 
+    }
     else {
       return res.status(200).json({ authenticated: false });
     }
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ 
+      error: {
+        code: 'SERVER_ERROR',
+        message: RequestMessage.SERVER_ERROR,
+        detail: {}
+      }
+    });
   }
 });
 
@@ -46,16 +52,22 @@ router.post('/login', audit(ActionEvt.AUTHENTICATE), async (req, res) => {
   try {
     const parsedBody = await loginSchema.safeParseAsync(req.body);
     if (!parsedBody.success)
-      return res.status(400).json(
-        { 
-          error: RequestMessage.INVALID_REQUEST_DATA,
-          detail: parsedBody.error.flatten() 
+      return res.status(400).json({ 
+          error: {
+            code: 'INVALID_REQUEST_DATA',
+            message: RequestMessage.INVALID_REQUEST_DATA,
+            detail: parsedBody.error.flatten() 
+          }
         });
   
     const auth = await AuthService.Authenticate(parsedBody.data, req);
     if (!auth.success)
-      return res.status(400).json({ 
-        error: RequestMessage.INVALID_CREDENTIALS
+      return res.status(401).json({ 
+        error: {
+          code: 'INVALID_CREDENTIALS',
+          message: RequestMessage.INVALID_CREDENTIALS,
+          detail: {}
+        }
       });
 
     // login successful, set cookie
@@ -74,7 +86,13 @@ router.post('/login', audit(ActionEvt.AUTHENTICATE), async (req, res) => {
   }
   catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ 
+      error: {
+        code: 'SERVER_ERROR',
+        message: RequestMessage.SERVER_ERROR,
+        detail: {}
+      }
+    });
   }
 });
 
@@ -85,10 +103,15 @@ router.post('/login', audit(ActionEvt.AUTHENTICATE), async (req, res) => {
  */
 router.post('/logout', authOrApiKey, audit(ActionEvt.LOGOUT), async (req, res) => {
   try {
-    const result = await AuthService.Logout(req.cookies?.session_id);
-
-    if (!result.success) {
-      return res.status(400).json({ error: RequestMessage.INVALID_REQUEST_DATA });
+    const parsedBody = await AuthService.Logout(req.cookies?.session_id);
+    if (!parsedBody.success) {
+      return res.status(400).json({ 
+          error: {
+            code: 'INVALID_REQUEST_DATA',
+            message: RequestMessage.INVALID_REQUEST_DATA,
+            detail: parsedBody.error.flatten() 
+          }
+        });
     }
 
     // -- remove cookie
@@ -103,7 +126,13 @@ router.post('/logout', authOrApiKey, audit(ActionEvt.LOGOUT), async (req, res) =
   }
   catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ 
+      error: {
+        code: 'SERVER_ERROR',
+        message: RequestMessage.SERVER_ERROR,
+        detail: {}
+      }
+    });
   }
 });
 
@@ -114,25 +143,33 @@ router.post('/logout', authOrApiKey, audit(ActionEvt.LOGOUT), async (req, res) =
  */
 router.post('/register', async (req, res) => {
   try {
-    const result = await registerSchema.safeParseAsync(req.body);
-    if (!result.success) {
-      return res.status(400).json({
-        error: RequestMessage.INVALID_REQUEST_DATA,
-        details: result.error.flatten()
-      });
+    const parsedBody = await registerSchema.safeParseAsync(req.body);
+    if (!parsedBody.success) {
+      return res.status(400).json({ 
+          error: {
+            code: 'INVALID_REQUEST_DATA',
+            message: RequestMessage.INVALID_REQUEST_DATA,
+            detail: parsedBody.error.flatten() 
+          }
+        });
     }
 
     const user = await AuthService.register(result.data);
     if (!user) {
       return res.status(409).json({ error: 'Email already in use' });
     }
-    return res.status(201).json({
-      data: user
-    });
+
+    return res.status(201).json({ data: user });
   } 
   catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ 
+      error: {
+        code: 'SERVER_ERROR',
+        message: RequestMessage.SERVER_ERROR,
+        detail: {}
+      }
+    });
   }
 });
 
