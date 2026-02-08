@@ -14,7 +14,10 @@ const app = express();
 app.use(httpLogger); // Set up Pino logger
 
 app.use(helmet());
-app.use(cors()); // default: allow all origins.
+app.use(cors({
+  origin: 'http://localhost:4200',
+  credentials: true,
+})); // default: allow all origins.
 
 app.use(express.json()); // parse incoming JSON requests.
 app.disable('etag'); // disable caching ressource automatically.

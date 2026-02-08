@@ -6,11 +6,13 @@
   background-color: var(--app-header-background);
   color: var(--app-text-color);
   height: 90px;
+  padding: 0 10px 0 10px;
 
   .top-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    height: 50px;
   }
 }

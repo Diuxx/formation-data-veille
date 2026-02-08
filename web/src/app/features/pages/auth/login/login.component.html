@@ -1,0 +1,59 @@
+<div class="auth-wrapper">
+  <mat-card class="auth-card">
+    <h1 class="title">Se connecter</h1>
+    <p class="subtitle">
+      La meilleure façon d'apprendre c'est les templates
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+        />
+
+        <button
+          mat-button
+          matSuffix
+          type="button"
+          class="show-btn"
+          (click)="hidePassword = !hidePassword"
+        >
+          {{ hidePassword ? 'voir' : 'cacher' }}
+        </button>
+      </mat-form-field>
+
+      <a class="forgot" routerLink="/auth/forgot-password">
+        Mot de passe oublié?
+      </a>
+
+      <button
+        mat-button
+        color="secondary"
+        class="primary-btn"
+        type="submit"
+      >
+        Connexion
+      </button>
+    </form>
+
+    <!-- <div class="divider">
+      <span>or</span>
+    </div>
+
+    <button mat-stroked-button class="secondary-btn">
+      <mat-icon svgIcon="apple"></mat-icon>
+      Sign in with Apple
+    </button> -->
+  </mat-card>
+  <div class="auth-switch">
+    Nouveau sur ce template? <a routerLink="/auth/register">Créer un compte</a>
+  </div>
+</div>

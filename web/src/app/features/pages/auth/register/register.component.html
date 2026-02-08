@@ -1,0 +1,56 @@
+<div class="auth-wrapper">
+  <mat-card class="auth-card">
+    <h1 class="title">Créer un compte</h1>
+    <p class="subtitle">
+      La meilleure façon d'apprendre c'est les templates
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+        />
+
+        <button
+          mat-button
+          matSuffix
+          type="button"
+          class="show-btn"
+          (click)="hidePassword = !hidePassword"
+        >
+          {{ hidePassword ? 'voir' : 'cacher' }}
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Confirmer le mot de passe</mat-label>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="confirmPassword"
+        />
+      </mat-form-field>
+
+      <button
+        matButton="filled"
+        color="primary"
+        class="primary-btn"
+        type="submit"
+        [disabled]="form.invalid"
+      >
+        Create account
+      </button>
+    </form>
+  </mat-card>
+  <div class="auth-switch">
+    Vous avez déjà un compte? <a routerLink="/auth/login">Se connecter</a>
+  </div>
+</div>

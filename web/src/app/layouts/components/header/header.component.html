@@ -1,4 +1,14 @@
-<p>test</p>
 <div class="top-header">
-
+  <div class="header-left">
+    <a routerLink="/home">Template</a>
+  </div>
+  <div class="header-center"></div>
+  <div class="header-right">
+    @if (store.isAuthenticated()) {
+      <button matButton (click)="logout()">Logout</button>
+    } 
+    @else {
+      <a matButton="filled" [routerLink]="['/auth/login']">Connexion</a>
+    }
+  </div>
 </div>

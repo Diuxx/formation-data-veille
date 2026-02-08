@@ -1,6 +1,13 @@
 
 html, body { height: 100%; }
 
+.mat-mdc-text-field-wrapper input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: inherit !important;
+  caret-color: inherit;
+}
+
+
 .th-white {
     --main-bg-color: var(--app-white);
     --main-fg-color: var(--app-black-soft);
@@ -42,6 +49,13 @@ a:hover {
     color: var(--link-hover-color);
 }
 
-div {
-    // border: 1px black solid;
+.title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.subtitle {
+  color: #555;
+  margin: 0.25rem 0 1.5rem;
 }
