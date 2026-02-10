@@ -42,6 +42,13 @@ export class Login {
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
+  refreshMe() {
+    this.auth.me().subscribe({
+      next: user => this.store.setUser(user),
+      error: () => this.store.clear(),
+    });
+  }
+
   /**
    * Send the authentication form.
    * @returns void
@@ -57,8 +64,9 @@ export class Login {
       this.loading = false;
       this.cdr.markForCheck();
     })).subscribe({
-      next: user => {
-        this.store.setUser(user);
+      next: () => {
+        // this.store.setUser(user);
+        // this.refreshMe();
         this.router.navigate(['/home']);
       },
       error: (err) => {

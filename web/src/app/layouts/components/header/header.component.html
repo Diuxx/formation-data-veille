@@ -4,7 +4,8 @@
       <img src="images/logo.png" alt="Logo">
     </a>
   </div>
-  <div class="header-center"></div>
+  <div class="header-center">
+  </div>
   <div class="header-right">
     @if (store.isAuthenticated()) {
       <button matButton (click)="logout()">Logout</button>
@@ -14,3 +15,32 @@
     }
   </div>
 </nav>
+<div>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+    @for (link of links; track link.label) {
+      @if (link.requiredAdmin && store.isAdmin()) {
+        <a 
+          mat-tab-link 
+          [routerLink]="link.route"
+          routerLinkActive
+          #rla="routerLinkActive"
+          [active]="rla.isActive"
+        > {{ link.label }} </a>
+      }
+
+      @if (!link.requiredAdmin) {
+        <a 
+          mat-tab-link 
+          [routerLink]="link.route"
+          routerLinkActive
+          #rla="routerLinkActive"
+          [active]="rla.isActive"
+        > {{ link.label }} </a>
+      }
+
+
+    }
+    <a mat-tab-link disabled>Disabled Link</a>
+  </nav>
+  <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+</div>

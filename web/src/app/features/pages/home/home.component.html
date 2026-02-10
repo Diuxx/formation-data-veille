@@ -1,1 +1,13 @@
-<p>home</p>
+<h1>Récapitulatif</h1>
+<span>{{ today | date }}</span>
+
+<div class="articles">
+  @for (article of articles; track article.id)
+  {
+    <div class="article">
+      <h2>{{ article.title }}</h2>
+      {{ article.content }}
+    </div>
+  }
+
+</div>

@@ -1,14 +1,17 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { User } from './models/user.model';
+import { Auth, Roles, User } from './models/user.model';
+
+
 
 @Injectable({ providedIn: 'root' })
 export class AuthStore {
-  private userSignal = signal<User | null>(null);
+  private userSignal = signal<Auth | null>(null);
 
   public user = this.userSignal.asReadonly();
   public isAuthenticated = computed(() => !!this.userSignal());
+  public isAdmin = computed(() => this.userSignal()?.user?.role == Roles.admin);
 
-  setUser(user: User | null) {
+  setUser(user: Auth | null) {
     this.userSignal.set(user);
   }
 

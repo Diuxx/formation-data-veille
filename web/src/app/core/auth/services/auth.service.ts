@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { User } from '../models/user.model';
+import { Auth, User } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -72,7 +72,7 @@ export class AuthService {
    * Check if the current user is logged in.
    */
   me() {
-    return this.http.get<User>(
+    return this.http.get<Auth>(
       `${this.apiUrl}/check`,
       { withCredentials: true }
     );

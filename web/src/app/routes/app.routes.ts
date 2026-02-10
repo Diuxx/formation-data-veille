@@ -32,6 +32,16 @@ export const routes: Routes = [
         path: 'tools',
         canMatch: [authGuard],
         loadComponent: () => import('@features/pages/tools/tools.component').then(m => m.Tools)
+      },
+      {
+        path: 'front',
+        canMatch: [],
+        loadComponent: () => import('@features/pages/front/front.component').then(m => m.Front)
+      },
+      {
+        path: 'admin',
+        canMatch: [],
+        loadComponent: () => import('@features/pages/admin/admin.component').then(m => m.Admin)
       }
     ]
   },
