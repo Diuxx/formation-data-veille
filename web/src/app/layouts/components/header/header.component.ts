@@ -36,7 +36,7 @@ export class Header implements OnInit {
     { label: 'Accueil', route: '/home', requiredAdmin: false },
     { label: 'Front', route: '/front', requiredAdmin: false },
     { label: 'Tools', route: '/tools', requiredAdmin: false },
-    { label: 'Admin', route: '/admin', requiredAdmin: true }
+    { label: 'Admin', route: '/admin', requiredAdmin: false }
   ]
   activeLink = this.links[0];
 

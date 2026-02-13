@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>
+  {{ isEditMode ? 'Modifier un utilisateur' : 'Ajouter un utilisateur' }}
+</h2>
+
+<mat-dialog-content>
+  <form class="user-form" [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+      <mat-error>Email invalide</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom</mat-label>
+      <input matInput type="text" formControlName="name" />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+      <mat-error>Minimum 4 caractères</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Rôle</mat-label>
+      <mat-select formControlName="role">
+        <mat-option value="USER">USER</mat-option>
+        <mat-option value="ADMIN">ADMIN</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="isActive">Compte actif</mat-checkbox>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ isEditMode ? 'Nouveau mot de passe (optionnel)' : 'Mot de passe' }}</mat-label>
+      <input matInput type="password" formControlName="password" />
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+      <mat-error>Minimum 8 caractères</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annuler</button>
+  <button mat-flat-button color="primary" (click)="submit()">
+    {{ isEditMode ? 'Enregistrer' : 'Créer' }}
+  </button>
+</mat-dialog-actions>
