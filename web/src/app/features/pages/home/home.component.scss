@@ -9,12 +9,37 @@
 
   .articles {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 10px;
+
     .article {
       background-color: white;
+      overflow: hidden;
       border-radius: 8px;
-      padding: 5px;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+
+      img {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+      }
+
+      h2,
+      p {
+        margin: 0;
+        padding: 0 10px;
+      }
+
+      h2 {
+        padding-top: 10px;
+      }
+
+      p {
+        padding-bottom: 10px;
+      }
     }
   }
 }

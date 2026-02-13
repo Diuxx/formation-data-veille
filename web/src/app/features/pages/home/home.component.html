@@ -4,10 +4,16 @@
 <div class="articles">
   @for (article of articles; track article.id)
   {
-    <div class="article">
+    <a
+      class="article"
+      [href]="article.link"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <img [src]="article.image" [alt]="article.title" />
       <h2>{{ article.title }}</h2>
-      {{ article.content }}
-    </div>
+      <p>{{ article.description }}</p>
+    </a>
   }
 
 </div>
