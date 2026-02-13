@@ -1,19 +1,66 @@
-<h1>Récapitulatif</h1>
-<span>{{ today | date }}</span>
+<div class="home-header">
+  <div>
+    <h1>Vos news dev.dev</h1>
+    <span>Dernières mises à jour • {{ today | date:'dd/MM' }} • {{ today | date:'HH:mm' }}</span>
+  </div>
+</div>
 
-<div class="articles">
-  @for (article of articles; track article.id)
-  {
-    <a
-      class="article"
-      [href]="article.link"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <img [src]="article.image" [alt]="article.title" />
-      <h2>{{ article.title }}</h2>
-      <p>{{ article.description }}</p>
-    </a>
+<div class="columns">
+  @for (column of columns; track column.id) {
+    <section class="news-column">
+      <header>
+        <h2>{{ column.title }} <span>›</span></h2>
+      </header>
+
+      @for (item of column.items; track item.id) {
+        <article
+          class="news-item"
+          role="link"
+          tabindex="0"
+          (click)="openExternal(item.link)"
+          (keydown.enter)="openExternal(item.link)"
+          (keydown.space)="openExternal(item.link); $event.preventDefault()"
+        >
+          <div class="item-head">
+            <div class="source">• {{ item.source }}</div>
+
+          </div>
+
+          <div class="item-title">
+            <h3>{{ item.title }}</h3>
+            <div class="item-actions">
+              <img [src]="item.image" [alt]="item.title" />
+            </div>
+          </div>
+
+          <p>{{ item.description }}</p>
+
+          <div class="tags">
+            @for (tag of item.tags; track tag) {
+              <span>{{ tag }}</span>
+            }
+          </div>
+
+          <div class="meta">{{ item.published }} • Par {{ item.author }}</div>
+
+          @if (item.metrics?.length) {
+            <div class="nested-cards">
+              @for (metric of item.metrics; track metric.id) {
+                <div class="metric-card">
+                  <small>{{ metric.label }}</small>
+                  <strong>{{ metric.delta }}</strong>
+                  <span>{{ metric.value }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="nested-footer">Clause de non-responsabilité • Démo de données</div>
+            <a class="nested-link" href="https://www.google.com/finance" target="_blank" rel="noopener noreferrer" (click)="preventCardOpen($event)">
+              Plus d’infos sur Google Finance
+            </a>
+          }
+        </article>
+      }
+    </section>
   }
-
 </div>
