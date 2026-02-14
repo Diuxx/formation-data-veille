@@ -1,16 +1,6 @@
 import { Component, computed, signal } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
-
-type ToolArticle = {
-  id: number;
-  title: string;
-  description: string;
-  age: string;
-  author: string;
-  image: string;
-  link: string;
-  category: 'Sites utiles' | 'Base de données' | 'IDE' | 'Maquettes';
-};
+import { ToolArticle } from '@shared/models/tool-article.model';
 
 
 @Component({

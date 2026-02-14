@@ -1,22 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Component } from "@angular/core";
-
-type MetricCard = { id: number, label: string, delta: string, value: string }
-
-type NewsItem = {
-  id: number,
-  source: string,
-  title: string,
-  description: string,
-  image: string,
-  link: string,
-  tags: string[],
-  published: string,
-  author: string,
-  metrics?: MetricCard[]
-}
-
-type NewsColumn = { id: number, title: string, items: NewsItem[] }
+import { NewsColumn } from '@shared/models/news-item.model';
 
 @Component({
   selector: 'app-home',
