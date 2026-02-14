@@ -40,7 +40,7 @@ export const routes: Routes = [
       },
       {
         path: 'admin',
-        canMatch: [],
+        canMatch: [authGuard],
         loadComponent: () => import('@features/pages/admin/admin.component').then(m => m.Admin)
       }
     ]

@@ -34,9 +34,8 @@ export class Header implements OnInit {
   // variables
   public links: NavItem[] = [
     { label: 'Accueil', route: '/home', requiredAdmin: false },
-    { label: 'Front', route: '/front', requiredAdmin: false },
     { label: 'Tools', route: '/tools', requiredAdmin: false },
-    { label: 'Admin', route: '/admin', requiredAdmin: false }
+    { label: 'Admin', route: '/admin', requiredAdmin: true }
   ]
   activeLink = this.links[0];
 
