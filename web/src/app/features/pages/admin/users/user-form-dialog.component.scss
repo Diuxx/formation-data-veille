@@ -1,0 +1,17 @@
+:host {
+    .user-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        mat-form-field {
+        width: 100%;
+        }
+    }
+}
+
+::ng-deep {
+    mat-dialog-content {
+        padding-top: 5px !important;
+    }
+}

@@ -1,0 +1,21 @@
+<section class="admin-layout">
+		<aside class="admin-menu">
+			<h2>Pages admin</h2>
+
+			<div class="menu-items">
+				@for (item of menuItems; track item.path) {
+					<a
+						[routerLink]="item.path"
+						routerLinkActive="active"
+					>
+						<mat-icon>{{ item.icon }}</mat-icon>
+						<span>{{ item.label }}</span>
+					</a>
+				}
+			</div>
+		</aside>
+
+		<div class="admin-content">
+			<router-outlet></router-outlet>
+		</div>
+</section>

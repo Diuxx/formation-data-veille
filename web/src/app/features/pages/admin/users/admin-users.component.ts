@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from "@angular/core";
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,15 +6,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
+import { finalize } from 'rxjs/operators';
 import { AdminUser, AdminUserService } from 'app/core/auth/services/admin-user.service';
 import { UserFormDialogComponent, UserFormDialogData, UserFormDialogResult } from './user-form-dialog.component';
-import { finalize } from 'rxjs/operators';
-
 
 @Component({
-  selector: 'app-admin',
-  templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.scss'],
+  selector: 'app-admin-users',
+  templateUrl: './admin-users.component.html',
+  styleUrls: ['./admin-users.component.scss'],
   imports: [
     MatTableModule,
     MatButtonModule,
@@ -24,7 +23,7 @@ import { finalize } from 'rxjs/operators';
     MatChipsModule
   ]
 })
-export class Admin implements OnInit {
+export class AdminUsersComponent implements OnInit {
   private readonly userService = inject(AdminUserService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
@@ -120,5 +119,4 @@ export class Admin implements OnInit {
       error: () => this.snackBar.open('Échec de la mise à jour', 'Fermer', { duration: 3000 })
     });
   }
-
 }

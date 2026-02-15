@@ -42,9 +42,13 @@ export class Login {
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  refreshMe() {
+  loginSuccess() {
     this.auth.me().subscribe({
-      next: user => this.store.setUser(user),
+      next: user => 
+      {
+        this.store.setUser(user);
+        this.router.navigate(['/home']);
+      },
       error: () => this.store.clear(),
     });
   }
@@ -65,9 +69,7 @@ export class Login {
       this.cdr.markForCheck();
     })).subscribe({
       next: () => {
-        // this.store.setUser(user);
-        // this.refreshMe();
-        this.router.navigate(['/home']);
+       this.loginSuccess();
       },
       error: (err) => {
         // Basic error mapping based on HTTP status

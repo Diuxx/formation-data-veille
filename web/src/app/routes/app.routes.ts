@@ -41,7 +41,34 @@ export const routes: Routes = [
       {
         path: 'admin',
         canMatch: [authGuard],
-        loadComponent: () => import('@features/pages/admin/admin.component').then(m => m.Admin)
+        loadComponent: () => import('@features/pages/admin/shell/admin.component').then(m => m.Admin),
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'users' },
+          {
+            path: 'users',
+            loadComponent: () => import('@features/pages/admin/users/admin-users.component').then(m => m.AdminUsersComponent)
+          },
+          {
+            path: 'tools',
+            loadComponent: () => import('@features/pages/admin/tools/admin-tools.component').then(m => m.AdminToolsComponent)
+          },
+          {
+            path: 'tool-types',
+            loadComponent: () => import('@features/pages/admin/tool-types/admin-tool-types.component').then(m => m.AdminToolTypesComponent)
+          },
+          {
+            path: 'stacks',
+            loadComponent: () => import('@features/pages/admin/stacks/admin-stacks.component').then(m => m.AdminStacksComponent)
+          },
+          {
+            path: 'stack-types',
+            loadComponent: () => import('@features/pages/admin/stack-types/admin-stack-types.component').then(m => m.AdminStackTypesComponent)
+          },
+          {
+            path: 'audit-logs',
+            loadComponent: () => import('@features/pages/admin/audit-logs/admin-audit-logs.component').then(m => m.AdminAuditLogsComponent)
+          }
+        ]
       }
     ]
   },
