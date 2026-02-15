@@ -7,7 +7,7 @@ export const createUserSchema = z
     password: z.string().min(8, "Password must be at least 8 characters long"),
     name: z.string().min(4, "Name must be at least 4 characters long"),
     role: z.enum(["USER", "ADMIN"]).optional(),
-    isActive: z.number().int().min(0).max(1).optional(),
+    isActive: z.boolean().optional(),
   })
   .superRefine(async (data, ctx) => {
     if (data.email) {
@@ -31,7 +31,7 @@ export const updateUserSchema = z
     password: z.string().min(8, "Password must be at least 8 characters long").optional(),
     name: z.string().min(4, "Name must be at least 4 characters long").optional(),
     role: z.enum(["USER", "ADMIN"]).optional(),
-    isActive: z.number().int().min(0).max(1).optional()
+    isActive: z.boolean().optional()
   })
   .superRefine(async (data, ctx) => {
     if (data.email) {
@@ -41,7 +41,7 @@ export const updateUserSchema = z
 
       if (exists) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom, // use raw string instead of ZodIssueCode.
+          code: 'custom', // use raw string instead of ZodIssueCode.
           message: "Email already in use",
           path: ["email"],
         });

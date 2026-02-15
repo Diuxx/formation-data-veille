@@ -8,14 +8,14 @@ export interface AdminUser {
   email: string;
   name: string;
   role: 'ADMIN' | 'USER';
-  isActive: number;
+  isActive: boolean;
 }
 
 type CreateUserPayload = {
-  email: string;
+  email?: string;
   name: string;
   role: 'ADMIN' | 'USER';
-  isActive: number;
+  isActive: boolean;
   password: string;
 };
 

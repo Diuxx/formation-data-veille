@@ -14,16 +14,16 @@ export type UserFormDialogData = {
     email: string;
     name: string;
     role: 'ADMIN' | 'USER';
-    isActive: number;
+    isActive: boolean;
   };
 };
 
 export type UserFormDialogResult = {
-  email: string;
   name: string;
   role: 'ADMIN' | 'USER';
-  isActive: number;
+  isActive: boolean;
   password?: string;
+  email?: string;
 };
 
 @Component({
@@ -66,11 +66,15 @@ export class UserFormDialogComponent {
 
     const value = this.form.getRawValue();
     const result: UserFormDialogResult = {
-      email: value.email,
       name: value.name,
       role: value.role,
-      isActive: value.isActive ? 1 : 0
+      isActive: value.isActive
     };
+
+    // if the email has been changed in edit mode, include it in the result so that the parent component can handle it.
+    if (this.form.get('email')?.value != this.data.user?.email) {
+      result.email = value.email;
+    }
 
     if (value.password.trim()) {
       result.password = value.password.trim();

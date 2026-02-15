@@ -6,6 +6,8 @@ import { httpLogger } from './middlewares/logger.js';
 import dotenv from 'dotenv'; // loads environment variables from a .env file into process.env.
 import routes from './routes/index.js';
 
+import rateLimit from 'express-rate-limit'; // basic rate-limiting middleware for Express.
+
 import { initializeDatabase } from './database/prisma-init.js';
 
 dotenv.config(); // Load environment variables from .env file
@@ -13,6 +15,13 @@ dotenv.config(); // Load environment variables from .env file
 const app = express();
 app.use(httpLogger); // Set up Pino logger
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 300, // limit each IP to 300 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+})
+
+app.use(limiter);
 app.use(helmet());
 app.use(cors({
   origin: 'http://localhost:4200',
