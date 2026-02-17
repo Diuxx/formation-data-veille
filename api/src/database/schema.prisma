@@ -65,6 +65,67 @@ model users {
   tokens       tokens[]
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model stack_versions {
+  id          String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  stackId     String    @db.Char(36)
+  version     String    @db.VarChar(100)
+  releaseDate DateTime? @db.Date
+  icon        String?   @db.VarChar(500)
+  isLts       Boolean   @default(false)
+  notes       String?   @db.Text
+  tags        String?   @db.Text
+  createdAt   DateTime  @default(now()) @db.DateTime(0)
+  updatedAt   DateTime  @default(now()) @db.DateTime(0)
+  deletedAt   DateTime? @db.DateTime(0)
+  stacks      stacks    @relation(fields: [stackId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_stack_versions_stack")
+
+  @@unique([stackId, version], map: "uq_stack_version")
+  @@index([releaseDate], map: "idx_stack_versions_releaseDate")
+  @@index([stackId], map: "idx_stack_versions_stackId")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model stacks {
+  id             String           @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  name           String           @unique(map: "name") @db.VarChar(255)
+  description    String?          @db.Text
+  icon           String?          @db.VarChar(500)
+  createdAt      DateTime         @default(now()) @db.DateTime(0)
+  updatedAt      DateTime         @default(now()) @db.DateTime(0)
+  deletedAt      DateTime?        @db.DateTime(0)
+  stack_versions stack_versions[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tool_types {
+  id          String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  name        String    @unique(map: "name") @db.VarChar(120)
+  description String?   @db.Text
+  createdAt   DateTime  @default(now()) @db.DateTime(0)
+  updatedAt   DateTime  @default(now()) @db.DateTime(0)
+  deletedAt   DateTime? @db.DateTime(0)
+  tools       tools[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tools {
+  id          String     @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  toolTypeId  String     @db.Char(36)
+  name        String     @db.VarChar(255)
+  description String?    @db.Text
+  icon        String?    @db.VarChar(500)
+  url         String?    @db.VarChar(500)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now()) @db.DateTime(0)
+  updatedAt   DateTime   @default(now()) @db.DateTime(0)
+  deletedAt   DateTime?  @db.DateTime(0)
+  tool_types  tool_types @relation(fields: [toolTypeId], references: [id], onUpdate: Restrict, map: "fk_tools_tool_type")
+
+  @@index([isActive], map: "idx_tools_isActive")
+  @@index([toolTypeId], map: "idx_tools_toolTypeId")
+}
+
 enum audit_logs_type {
   USER
   SYSTEM
