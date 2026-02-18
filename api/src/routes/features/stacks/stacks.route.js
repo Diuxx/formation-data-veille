@@ -14,9 +14,10 @@ const router = Router();
  * Returns all stacks.
  * Requires authentication via session or API key.
  */
-router.get('/', authOrApiKey, async (_req, res) => {
+router.get('/', async (_req, res) => {
   try {
     const data = await StacksService.getStacks();
+    
     return res.status(200).json({ data, count: data.length });
   } catch (error) {
     logger.error(error);
@@ -52,7 +53,7 @@ router.post('/', authOrApiKey, isAdmin, async (req, res) => {
  * Returns all versions for a stack.
  * Requires authentication via session or API key.
  */
-router.get('/:id/versions', authOrApiKey, async (req, res) => {
+router.get('/:id/versions', async (req, res) => {
   try {
     const stack = await StacksService.getStackById(req.params.id);
     if (!stack) {

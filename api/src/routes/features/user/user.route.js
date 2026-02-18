@@ -17,7 +17,7 @@ const router = Router();
  * Requires authentication via session or API key.
  * Requires admin privileges.
  */
-router.get('/', authOrApiKey, isAdmin, audit(ActionEvt.LIST_USERS), async (_req, res, next) => {
+router.get('/', authOrApiKey, isAdmin, audit(ActionEvt.LIST_USERS), async (_req, res) => {
   try {
     const users = await UserService.getAll();
     return res.status(200).json({

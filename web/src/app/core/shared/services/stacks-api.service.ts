@@ -17,7 +17,7 @@ export class StacksApiService {
 
   public listStacks() {
     return this.http
-      .get<{ data: Stack[] }>(`${this.apiUrl}/stacks`, { withCredentials: true })
+      .get<{ data: Stack[] }>(`${this.apiUrl}/stacks`)
       .pipe(map((response) => response.data));
   }
 
@@ -29,7 +29,7 @@ export class StacksApiService {
 
   public listVersions(stackId: string) {
     return this.http
-      .get<{ data: StackVersion[] }>(`${this.apiUrl}/stacks/${stackId}/versions`, { withCredentials: true })
+      .get<{ data: StackVersion[] }>(`${this.apiUrl}/stacks/${stackId}/versions`)
       .pipe(map((response) => response.data));
   }
 

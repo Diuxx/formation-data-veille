@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import nodemailer from "nodemailer";
 
 /**
  * Add days to a date.

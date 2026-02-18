@@ -1,6 +1,9 @@
 import { DatePipe } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, inject, signal, computed } from "@angular/core";
 import { NewsColumn } from '@shared/models/news-item.model';
+import { StacksApiService } from '@shared/services/stacks-api.service';
+import { Stack } from '@shared/models/stack.model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +15,10 @@ export class Home {
 
   public today: Date = new Date();
 
-  public columns: NewsColumn[] = [
+  private readonly stacksApi = inject(StacksApiService);
+  public readonly stacks = signal<Stack[]>([]);
+
+  private readonly staticColumns: NewsColumn[] = [
     {
       id: 1,
       title: "Angular",
@@ -125,6 +131,71 @@ export class Home {
       ]
     }
   ];
+
+  constructor() {
+    forkJoin({
+      stacks: this.stacksApi.listStacks(),
+    })
+    .subscribe(({ stacks }: { stacks: Stack[] }) => {
+      this.stacks.set(stacks);
+    });
+
+    this.stacksApi.listStacks().subscribe(data => this.stacks.set(data));
+  }
+
+  public readonly stacksData = computed<NewsColumn[]>(() => {
+      return this.stacks().map((s, idx) => ({
+        id: idx,
+        title: s.name,
+        items: s.versions.map((v, vidx) => ({
+          id: vidx,
+          source: 'Stack',
+          title: v.version,
+          description: v.notes || '—',
+          image: s.icon || 'https://picsum.photos/seed/stack-' + s.id + '/120/120',
+          link: this.resolveStackLink(s.name),
+          tags: [`Release date: ${v.releaseDate ? new Date(v.releaseDate).toLocaleDateString() : 'N/A'}`, v.isLts ? 'LTS' : 'Stable' ],
+          published: v.createdAt ? new Date(v.createdAt).toLocaleDateString() : 'Unknown',
+          author: 'Catalogue interne',
+        }))
+      }))
+  });
+    
+  //   ({
+  //   id: 99,
+  //   title: 'Stacks',
+  //   items: this.stacks().map((s, idx) => ({
+  //     id: 100 + idx,
+  //     source: 'Stacks',
+  //     title: s.name,
+  //     description: s.description || '—',
+  //     image: s.icon || 'https://picsum.photos/seed/stack-' + s.id + '/120/120',
+  //     link: this.resolveStackLink(s.name),
+  //     tags: [
+  //       `Versions: ${s.versionsCount || 0}`
+  //     ],
+  //     published: 'mis à jour récemment',
+  //     author: 'Catalogue interne',
+  //   }))
+  // }));
+
+  public readonly allColumns = computed<NewsColumn[]>(() => {
+    const stacks = this.stacksData();
+    if (!stacks) {
+      return this.staticColumns;
+    }
+    // Place stacks as the first column for visibility
+    return stacks;
+  });
+
+  private resolveStackLink(name: string): string {
+    const map: Record<string, string> = {
+      'Angular': 'https://angular.io',
+      'Node.js': 'https://nodejs.org',
+      'PostgreSQL': 'https://www.postgresql.org'
+    };
+    return map[name] || '#';
+  }
 
   public openExternal(url: string): void {
     window.open(url, '_blank', 'noopener,noreferrer');

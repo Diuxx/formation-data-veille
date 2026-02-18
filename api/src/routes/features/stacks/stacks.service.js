@@ -10,21 +10,44 @@ export default class StacksService {
    * @returns A list of stacks with versions count.
    */
   static async getStacks() {
-    return await prisma.$queryRaw`
-      SELECT
-        s.id,
-        s.name,
-        s.description,
-        s.icon,
-        s.createdAt,
-        s.updatedAt,
-        COUNT(sv.id) AS versionsCount
-      FROM stacks s
-      LEFT JOIN stack_versions sv ON sv.stackId = s.id AND sv.deletedAt IS NULL
-      WHERE s.deletedAt IS NULL
-      GROUP BY s.id, s.name, s.description, s.icon, s.createdAt, s.updatedAt
-      ORDER BY s.name ASC
-    `;
+    const rows = await prisma.stacks.findMany({
+      where: { deletedAt: null },
+      orderBy: { name: 'asc' },
+      include: {
+        stack_versions: {
+          where: { deletedAt: null },
+          orderBy: [
+            { releaseDate: 'desc' },
+            { createdAt: 'desc' }
+          ],
+          select: {
+            id: true,
+            stackId: true,
+            version: true,
+            releaseDate: true,
+            icon: true,
+            isLts: true,
+            notes: true,
+            tags: true,
+            createdAt: true,
+            updatedAt: true,
+          }
+        },
+        _count: { select: { stack_versions: true } }
+      }
+    });
+
+    // Map Prisma result to desired shape and add numeric versionsCount
+    return rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      description: r.description,
+      icon: r.icon,
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt,
+      versionsCount: Number(r._count?.stack_versions ?? 0),
+      versions: r.stack_versions
+    }));
   }
 
   /**

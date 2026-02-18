@@ -6,10 +6,9 @@
 </header>
 
 <nav class="categories" aria-label="Filtres outils">
-    @for (category of categories; track category) {
+    @for (category of categories(); track category) {
         <button
             type="button"
-            [class.active]="selectedCategory() === category"
             (click)="selectCategory(category)"
         >
             {{ category }}
@@ -18,21 +17,23 @@
 </nav>
 
 <div class="list-card">
-    @for (article of filteredArticles(); track article.id) {
-        <a class="article" [href]="article.link" target="_blank" rel="noopener noreferrer">
+    @for (tool of filteredTools(); track tool.id) {
+        <a class="article" [href]="tool.url || '#'" target="_blank" rel="noopener noreferrer">
             <div class="content">
                 <div style="display: flex;flex-direction: column;gap: 8px;">
-                    <h2>{{ article.title }}</h2>
-                    <p class="description">{{ article.description }}</p>
+                    <h2>{{ tool.name }}</h2>
+                    <p class="description">{{ tool.description }}</p>
                 </div>
-                <p class="meta">{{ article.age }} • Par {{ article.author }}</p>
+                <!-- <p class="meta">{{ tool.toolTypeName || (toolTypes().find(t => t.id === tool.toolTypeId)?.name || '') }}</p> -->
             </div>
 
-            <img [src]="article.image" [alt]="article.title" />
+            @if (tool.icon) {
+              <img [src]="tool.icon" [alt]="tool.name" />
+            }
         </a>
     }
 
-    @if (!filteredArticles().length) {
+    @if (!filteredTools().length) {
         <div class="empty">Pas encore de contenu pour cette catégorie.</div>
     }
 </div>

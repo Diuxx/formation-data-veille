@@ -4,6 +4,7 @@ export interface Stack {
   description?: string | null;
   icon?: string | null;
   versionsCount?: number;
+  versions: StackVersion[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -15,6 +16,7 @@ export interface StackVersion {
   releaseDate?: string | null;
   isLts: number;
   notes?: string | null;
+  link?: string | null; // add link property to StackVersion
   createdAt?: string;
   updatedAt?: string;
 }

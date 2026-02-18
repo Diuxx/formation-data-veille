@@ -6,7 +6,7 @@
 </div>
 
 <div class="columns">
-  @for (column of columns; track column.id) {
+  @for (column of allColumns(); track column.id) {
     <section class="news-column">
       <header>
         <h2>{{ column.title }} <span>›</span></h2>

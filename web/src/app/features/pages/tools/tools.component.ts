@@ -1,6 +1,7 @@
-import { Component, computed, signal } from "@angular/core";
+import { Component, computed, signal, inject } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
-import { ToolArticle } from '@shared/models/tool-article.model';
+import { ToolsApiService } from '@shared/services/tools-api.service';
+import { Tool, ToolType } from '@shared/models/tool.model';
 
 
 @Component({
@@ -10,74 +11,42 @@ import { ToolArticle } from '@shared/models/tool-article.model';
   imports: [MatIconModule]
 })
 export class Tools {
-  public readonly categories = [
-    'Dernières infos',
-    'Films',
-    'Musique',
-    'Maquettes',
-    'Sites utiles',
-    'Base de données',
-    'IDE'
-  ];
+  private readonly api = inject(ToolsApiService);
 
-  public readonly selectedCategory = signal<string>('Sites utiles');
+  public readonly toolTypes = signal<ToolType[]>([]);
+  public readonly tools = signal<Tool[]>([]);
+  public readonly selectedTypeId = signal<string | null>(null);
 
-  public readonly articles = signal<ToolArticle[]>([
-    {
-      id: 1,
-      title: 'Stack Overflow, MDN et DevDocs : le trio rapide pour débloquer un bug front',
-      description: 'Trois sources complémentaires pour trouver des réponses vite, vérifier les APIs et valider les exemples.',
-      age: 'il y a 2 jours',
-      author: 'Simon Bento',
-      image: 'https://picsum.photos/seed/dev-tools-1/420/220',
-      link: 'https://developer.mozilla.org',
-      category: 'Sites utiles'
-    },
-    {
-      id: 2,
-      title: 'Prisma Studio + migrations : garder la base propre sans ralentir l’équipe',
-      description: 'Visualiser les données, versionner les schémas, et réduire les surprises en production.',
-      age: 'il y a 4 jours',
-      author: 'Camille Durand',
-      image: 'https://picsum.photos/seed/dev-tools-2/420/220',
-      link: 'https://www.prisma.io/docs',
-      category: 'Base de données'
-    },
-    {
-      id: 3,
-      title: 'VS Code : extensions essentielles pour un workflow propre en Angular et Node',
-      description: 'Lint, format, snippets et debug intégrés pour coder plus vite sans sacrifier la qualité.',
-      age: 'il y a 4 heures',
-      author: 'Hayet Kechit',
-      image: 'https://picsum.photos/seed/dev-tools-3/420/220',
-      link: 'https://code.visualstudio.com/docs',
-      category: 'IDE'
-    },
-    {
-      id: 4,
-      title: 'Design tokens + handoff Figma : livrer des maquettes plus actionnables pour les devs',
-      description: 'Nommage clair, composants robustes et exports cohérents pour limiter les allers-retours.',
-      age: 'il y a 1 jour',
-      author: 'Julie Martin',
-      image: 'https://picsum.photos/seed/dev-tools-4/420/220',
-      link: 'https://www.figma.com/community',
-      category: 'Maquettes'
-    }
-  ]);
+  public readonly categories = computed(() => this.toolTypes().map(t => t.name));
 
-  public readonly filteredArticles = computed(() => {
-    const category = this.selectedCategory();
-    const items = this.articles();
+  public readonly filteredTools = computed(() => {
+    const typeId = this.selectedTypeId();
+    const items = this.tools();
 
-    if (category === 'Dernières infos') {
+    if (!typeId) {
       return items;
     }
 
-    return items.filter((item) => item.category === category);
+    return items.filter((item) => item.toolTypeId === typeId);
   });
 
+  constructor() {
+    this.api.listTypes().subscribe(types => {
+      this.toolTypes.set(types);
+      // Select first type by default
+      if (types.length) {
+        this.selectedTypeId.set(types[0].id);
+      }
+    });
+
+    this.api.listTools().subscribe(items => {
+      this.tools.set(items);
+    });
+  }
+
   public selectCategory(category: string): void {
-    this.selectedCategory.set(category);
+    const type = this.toolTypes().find(t => t.name === category);
+    this.selectedTypeId.set(type?.id ?? null);
   }
 
 }

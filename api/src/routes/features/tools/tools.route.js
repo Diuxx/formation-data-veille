@@ -14,7 +14,7 @@ const router = Router();
  * Returns all tool types.
  * Requires authentication via session or API key.
  */
-router.get('/types', authOrApiKey, async (_req, res) => {
+router.get('/types', async (_req, res) => {
   try {
     const data = await ToolsService.getToolTypes();
     return res.status(200).json({ data, count: data.length });
@@ -52,7 +52,7 @@ router.post('/types', authOrApiKey, isAdmin, async (req, res) => {
  * Returns all tools.
  * Requires authentication via session or API key.
  */
-router.get('/', authOrApiKey, async (_req, res) => {
+router.get('/', async (_req, res) => {
   try {
     const data = await ToolsService.getTools();
     return res.status(200).json({ data, count: data.length });

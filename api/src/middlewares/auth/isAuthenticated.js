@@ -4,7 +4,7 @@ import prisma from '../../database/prisma.js';
  * Optional authentication check. If a valid session token or API key is present,
  * attaches the user to req.user. Otherwise, leaves req.user null.
  */
-export async function isAuthenticate(req, res, next) {
+export async function isAuthenticate(req, _, next) {
   try {
     req.user = null;
 
@@ -36,7 +36,7 @@ export async function isAuthenticate(req, res, next) {
     }
 
     return next();
-  } catch (_) {
+  } catch {
     // Non-blocking: on error, continue without user attached
     return next();
   }

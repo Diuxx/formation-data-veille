@@ -4,7 +4,7 @@ import { getDatabaseHealth } from './health.service.js';
 
 const router = express.Router();
 
-router.get('/',  async (_req, res) => {
+router.get('/',  async (_req, res, next) => {
   try {
     logger.info('displaying api status (test)');
 

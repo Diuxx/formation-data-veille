@@ -1,4 +1,5 @@
 import prisma from '../../database/prisma.js';
+import logger from '../logger.js';
 
 /**
  * Authenticates the request using either session authentication or API key authentication.
@@ -30,7 +31,7 @@ export async function authOrApiKey(req, res, next) {
   }  
 }
 
-export async function optionalAuth(req, res, next) {
+export async function optionalAuth(req, _res, next) {
   req.user = null;
   req.apiKey = null;
   try {
@@ -82,7 +83,7 @@ export async function tryAuth(req) {
  * @param {*} req The request object.
  * @returns sends 401 or 403 on failure;
  */
-export async function tryAuthWithApiKey(req, res) {
+export async function tryAuthWithApiKey(req) {
 
     const apiKey = req.headers['x-api-key'];
 

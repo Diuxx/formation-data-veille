@@ -17,7 +17,7 @@ export class ToolsApiService {
 
   public listTypes() {
     return this.http
-      .get<{ data: ToolType[] }>(`${this.apiUrl}/tools/types`, { withCredentials: true })
+      .get<{ data: ToolType[] }>(`${this.apiUrl}/tools/types`)
       .pipe(map((response) => response.data));
   }
 
@@ -29,7 +29,7 @@ export class ToolsApiService {
 
   public listTools() {
     return this.http
-      .get<{ data: Tool[] }>(`${this.apiUrl}/tools`, { withCredentials: true })
+      .get<{ data: Tool[] }>(`${this.apiUrl}/tools`)
       .pipe(map((response) => response.data));
   }
 

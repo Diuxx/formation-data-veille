@@ -12,7 +12,7 @@ export function audit(action, detailsBuilder = null) {
         // --
         const trigger = req.user ? (req.user.role == 'SYSTEM' ? 'SYSTEM' : 'USER') : 'ANONYMOUS';
         const date = new Date();
-        const { ip, userAgent } = await getClientInfo(req);
+        const { ip, /*userAgent*/ } = await getClientInfo(req);
         
         let details = null;
         if (typeof detailsBuilder === 'function') {

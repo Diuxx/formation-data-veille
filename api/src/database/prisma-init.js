@@ -4,7 +4,6 @@ import { addYears } from '../utils/utils.js';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import fs from 'fs';
-import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import mysql from 'mysql2/promise';
 
