@@ -35,6 +35,8 @@ async function initializeDatabase() {
     multipleStatements: true,
   });
 
+  let databaseCreated = false;
+
   try {
     // Check if database exists
     const [rows] = await conn.query('SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?', [database]);
@@ -43,11 +45,22 @@ async function initializeDatabase() {
     if (!exists) {
       await conn.query(`CREATE DATABASE IF NOT EXISTS \`${database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`);
       await conn.query(`USE \`${database}\`;`);
+      databaseCreated = true;
 
-      // Execute schema script on freshly created database
-      await execScript(conn, './src/database/scripts/01_schema.sql');
-      await execScript(conn, './src/database/scripts/02_tools_stacks.sql');
-      await execScript(conn, './src/database/scripts/03_seeding.sql');
+      // Execute SQL scripts inside a transaction.
+      // Note: some DDL statements may still trigger implicit commits depending on the engine.
+      await conn.beginTransaction();
+
+      try {
+        await execScript(conn, './src/database/scripts/01_schema.sql');
+        await execScript(conn, './src/database/scripts/02_tools_stacks.sql');
+        await execScript(conn, './src/database/scripts/03_seeding.sql');
+        await conn.commit();
+      }
+      catch (error) {
+        await conn.rollback();
+        throw error;
+      }
 
       logger.info('Database created and schema applied.');
       
@@ -63,6 +76,18 @@ async function initializeDatabase() {
 
   }
   catch (error) {
+    if (databaseCreated) {
+      try {
+        await conn.query('USE information_schema;');
+        await conn.query(`DROP DATABASE IF EXISTS \`${database}\`;`);
+        logger.warn(`Initialization failed, database ${database} has been dropped.`);
+      }
+      catch (dropError) {
+        logger.error(`Failed to drop database ${database} after initialization error:`);
+        logger.error(dropError);
+      }
+    }
+
     logger.error('Initialization failed:', error);
     throw error;
   } finally {
