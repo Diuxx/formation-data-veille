@@ -12,6 +12,10 @@
         <h2>{{ column.title }} <span>›</span></h2>
       </header>
 
+      @if (column.items.length === 0) {
+        <div class="empty">Pas encore de contenu pour cette catégorie.</div>
+      }
+
       @for (item of column.items; track item.id) {
         <article
           class="news-item"
@@ -21,16 +25,9 @@
           (keydown.enter)="openExternal(item.link)"
           (keydown.space)="openExternal(item.link); $event.preventDefault()"
         >
-          <div class="item-head">
-            <div class="source">• {{ item.source }}</div>
-
-          </div>
-
           <div class="item-title">
             <h3>{{ item.title }}</h3>
-            <div class="item-actions">
-              <img [src]="item.image" [alt]="item.title" />
-            </div>
+            <!-- <div class="item-actions"><img [src]="item.image" [alt]="item.title" /></div> -->
           </div>
 
           <p>{{ item.description }}</p>

@@ -184,8 +184,7 @@ export class Home {
     if (!stacks) {
       return this.staticColumns;
     }
-    // Place stacks as the first column for visibility
-    return stacks;
+    return stacks; // Place stacks as the first column for visibility
   });
 
   private resolveStackLink(name: string): string {

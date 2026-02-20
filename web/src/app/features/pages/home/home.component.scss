@@ -15,16 +15,24 @@
     margin-top: 20px;
     gap: 12px;
 
+    // font-size: 1.75rem;
+    // font-family: "Google Sans", sans-serif;
+    // line-height: 1.1428571429;
+    // font-weight: 400;
+    // margin-bottom: 8px;
+
     h1 {
       margin: 0;
       color: var(--app-black);
-      font-size: 40px;
+      font-size: 1.75rem;
       line-height: 1.1;
     }
 
     span {
       color: var(--app-text-light-2);
-      font-size: 16px;
+      // font-size: 16px;
+      font-size: 0.8rem;
+
     }
 
     .personalize {
@@ -53,6 +61,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    height: fit-content;
 
     > header h2 {
       margin: 0;
@@ -151,8 +160,8 @@
         background-color: var(--app-card-background);
         color: var(--app-blue);
         border-radius: 999px;
-        padding: 5px 10px;
-        font-size: 12px;
+        padding: 3px 7px;
+        font-size: 10px;
       }
     }
 
