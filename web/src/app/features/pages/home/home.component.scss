@@ -8,45 +8,6 @@
   margin: 0 auto;
   padding: 12px;
 
-  .home-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 20px;
-    gap: 12px;
-
-    // font-size: 1.75rem;
-    // font-family: "Google Sans", sans-serif;
-    // line-height: 1.1428571429;
-    // font-weight: 400;
-    // margin-bottom: 8px;
-
-    h1 {
-      margin: 0;
-      color: var(--app-black);
-      font-size: 1.75rem;
-      line-height: 1.1;
-    }
-
-    span {
-      color: var(--app-text-light-2);
-      // font-size: 16px;
-      font-size: 0.8rem;
-
-    }
-
-    .personalize {
-      border: 1px solid var(--app-divider-light-2);
-      border-radius: 999px;
-      background-color: var(--app-card-background);
-      color: var(--app-blue);
-      padding: 10px 14px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-  }
-
   .columns {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -13,7 +13,6 @@ export class App {
     private readonly auth: AuthService,
     private store: AuthStore
   ) {
-    console.log(this.store.user);
     this.auth.me().subscribe({
       next: user => this.store.setUser(user),
       error: () => this.store.clear(),

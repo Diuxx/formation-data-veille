@@ -30,7 +30,7 @@ export const routes: Routes = [
       },
       {
         path: 'tools',
-        canMatch: [authGuard],
+        canMatch: [],
         loadComponent: () => import('@features/pages/tools/tools.component').then(m => m.Tools)
       },
       {

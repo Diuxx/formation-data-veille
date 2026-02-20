@@ -1,7 +1,13 @@
-<div class="home-header">
+<div class="page-header">
   <div>
-    <h1>Vos news dev.dev</h1>
-    <span>Dernières mises à jour • {{ today | date:'dd/MM' }} • {{ today | date:'HH:mm' }}</span>
+    <h1>Vos news sur verly.dev</h1>
+    <span>
+      @if (lastUpdateDate) {
+        Dernière mise à jour • {{ lastUpdateDate | date:'dd/MM' }} • {{ lastUpdateDate | date:'HH:mm' }}
+      } @else {
+         Aucune mise à jour disponible.
+      }
+    </span>
   </div>
 </div>
 

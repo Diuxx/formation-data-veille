@@ -13,11 +13,15 @@ import { forkJoin } from 'rxjs';
 })
 export class Home {
 
+  // variables
   public today: Date = new Date();
+  public lastUpdateDate: Date | undefined = undefined;
 
-  private readonly stacksApi = inject(StacksApiService);
   public readonly stacks = signal<Stack[]>([]);
 
+
+  // private variables & mocks
+  private readonly stacksApi = inject(StacksApiService);
   private readonly staticColumns: NewsColumn[] = [
     {
       id: 1,
@@ -138,6 +142,13 @@ export class Home {
     })
     .subscribe(({ stacks }: { stacks: Stack[] }) => {
       this.stacks.set(stacks);
+
+      // get last update date from stacks versions.
+      const lastUpdate = stacks
+        .map(s => s.versions.map(v => new Date(v.createdAt || 0)))
+        .flat() // todo: the backend can do it. see how it's works.
+        .sort((a, b) => b.getTime() - a.getTime())[0];
+      this.lastUpdateDate = lastUpdate ? lastUpdate : undefined;
     });
 
     this.stacksApi.listStacks().subscribe(data => this.stacks.set(data));
