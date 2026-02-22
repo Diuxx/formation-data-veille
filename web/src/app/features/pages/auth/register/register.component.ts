@@ -7,7 +7,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from 'app/core/auth/services/auth.service';
-import { AuthStore } from 'app/core/auth/auth.store';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -30,10 +29,10 @@ export class Register {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
-  public hidePassword: boolean = true;
-  public loading: boolean = false;
+  public hidePassword = true;
+  public loading = false;
   public serverError: string | null = null;
-  public created: boolean = false;
+  public created = false;
   
   private passwordMatchValidator = (group: AbstractControl): ValidationErrors | null => {
     const password = group.get('password')?.value;

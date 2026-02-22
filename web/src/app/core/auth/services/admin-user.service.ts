@@ -11,13 +11,13 @@ export interface AdminUser {
   isActive: boolean;
 }
 
-type CreateUserPayload = {
+interface CreateUserPayload {
   email?: string;
   name: string;
   role: 'ADMIN' | 'USER';
   isActive: boolean;
   password: string;
-};
+}
 
 type UpdateUserPayload = Partial<Omit<CreateUserPayload, 'password'>> & { password?: string };
 

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from './core/auth/services/auth.service';
 import { AuthStore } from './core/auth/auth.store';
@@ -9,10 +9,12 @@ import { AuthStore } from './core/auth/auth.store';
   template: `<router-outlet />`,
 })
 export class App {
-  constructor(
-    private readonly auth: AuthService,
-    private store: AuthStore
-  ) {
+
+  // dependency injection using inject.
+  private readonly auth = inject(AuthService);
+  private readonly store = inject(AuthStore);
+
+  constructor() {
     this.auth.me().subscribe({
       next: user => this.store.setUser(user),
       error: () => this.store.clear(),

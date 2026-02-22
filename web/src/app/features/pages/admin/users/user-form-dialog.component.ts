@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-export type UserFormDialogData = {
+export interface UserFormDialogData {
   mode: 'create' | 'edit';
   user?: {
     id: string;
@@ -16,15 +16,15 @@ export type UserFormDialogData = {
     role: 'ADMIN' | 'USER';
     isActive: boolean;
   };
-};
+}
 
-export type UserFormDialogResult = {
+export interface UserFormDialogResult {
   name: string;
   role: 'ADMIN' | 'USER';
   isActive: boolean;
   password?: string;
   email?: string;
-};
+}
 
 @Component({
   selector: 'app-user-form-dialog',

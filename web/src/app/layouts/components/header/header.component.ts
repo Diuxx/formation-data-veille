@@ -8,7 +8,7 @@ import { Router, RouterLink, RouterModule } from "@angular/router";
 import { AuthStore } from "app/core/auth/auth.store";
 import { AuthService } from "app/core/auth/services/auth.service";
 
-type NavItem = { label: string; route: string; requiredAdmin: boolean };
+interface NavItem { label: string; route: string; requiredAdmin: boolean }
 
 @Component({
   selector: 'app-header',
@@ -38,10 +38,6 @@ export class Header implements OnInit {
     { label: 'Admin', route: '/admin', requiredAdmin: true }
   ]
   activeLink = this.links[0];
-
-  constructor() {
-
-  }
 
   ngOnInit() {
     console.log(this.store.isAdmin())

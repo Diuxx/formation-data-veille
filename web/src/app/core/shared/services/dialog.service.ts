@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { DialogComponent } from "../components/dialog/dialog.component";
 
@@ -6,11 +6,13 @@ import { DialogComponent } from "../components/dialog/dialog.component";
     providedIn: 'root'
 })
 export class DialogService {
+
+    private readonly dialog = inject(MatDialog);
+
     // variable
     private dialogRef?: MatDialogRef<DialogComponent>;
 
-    constructor(private readonly dialog: MatDialog,) {}
-
+    // begin of methods 
     private display(title: string, message: string): MatDialogRef<DialogComponent> {
         if (this.dialogRef !== undefined) {
             this.dialogRef?.close();
@@ -23,7 +25,7 @@ export class DialogService {
             },
             width: '400px',
         });
-        this.dialogRef.afterClosed().subscribe(r => this.dialogRef = undefined);
+        this.dialogRef.afterClosed().subscribe(() => this.dialogRef = undefined);
         return this.dialogRef;
     }
 

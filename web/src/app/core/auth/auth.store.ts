@@ -1,5 +1,5 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { Auth, Roles, User } from './models/user.model';
+import { Auth, Roles } from './models/user.model';
 
 
 

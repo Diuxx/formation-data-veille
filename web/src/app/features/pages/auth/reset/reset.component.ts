@@ -6,9 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from 'app/core/auth/services/auth.service';
-import { AuthStore } from 'app/core/auth/auth.store';
 
 @Component({
   selector: 'app-reset',
@@ -30,10 +29,10 @@ export class ResetPassword implements OnInit {
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
 
-  public submitted: boolean = false;
+  public submitted = false;
   public token: string | null = null;
   public form!: FormGroup;
-  public loading: boolean = false;
+  public loading = false;
   public serverError: string | null = null;
 
   ngOnInit() {

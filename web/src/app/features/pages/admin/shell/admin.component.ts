@@ -2,11 +2,11 @@ import { Component } from "@angular/core";
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
-type AdminMenuItem = {
+interface AdminMenuItem {
   path: string;
   label: string;
   icon: string;
-};
+}
 
 
 @Component({
