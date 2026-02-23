@@ -1,6 +1,6 @@
 
 :host {
-  min-height: var(--min-height);
+  min-height: calc(var(--min-height) - 12px);
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -25,10 +25,6 @@
     height: fit-content;
 
     > header h2 {
-      margin: 0;
-      font-size: 24px;
-      color: var(--app-black);
-
       span {
         color: var(--app-text-light-2);
       }
@@ -102,13 +98,20 @@
     p {
       margin: 0;
       color: var(--app-text-color);
-      font-size: 15px;
-      line-height: 1.35;
+      font-size: 0.85rem;
+      line-height: 1.25;
+      font-weight: 400;
       display: -webkit-box;
-      line-clamp: 2;
-      -webkit-line-clamp: 2;
+      line-clamp: 3;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      &:hover {
+        text-decoration: underline;
+        line-clamp: none;
+        -webkit-line-clamp: none;
+        -webkit-box-orient: vertical;
+      }
     }
 
     .tags {
@@ -128,7 +131,7 @@
 
     .meta {
       color: var(--app-text-light-2);
-      font-size: 13px;
+      font-size: 0.75rem;
     }
 
     .nested-cards {

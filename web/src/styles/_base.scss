@@ -35,20 +35,6 @@ body {
     margin: 0;
 }
 
-p {
-    margin: 0;
-}
-
-a,
-a:visited,
-a:hover {
-    color: var(--link-color);
-    text-decoration: none;
-}
-a:hover {
-    color: var(--link-hover-color);
-}
-
 .title {
   font-size: 1.75rem;
   font-weight: 600;

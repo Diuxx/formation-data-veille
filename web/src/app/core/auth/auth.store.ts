@@ -1,8 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Auth, Roles } from './models/user.model';
 
-
-
 @Injectable({ providedIn: 'root' })
 export class AuthStore {
   private userSignal = signal<Auth | null>(null);
