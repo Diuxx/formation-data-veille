@@ -35,6 +35,11 @@ body {
     margin: 0;
 }
 
+main {
+    width: 100%;
+    min-height: calc(var(--min-height) + 12px);
+}
+
 .title {
   font-size: 1.75rem;
   font-weight: 600;
