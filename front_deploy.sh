@@ -27,6 +27,7 @@ echo "🚀 Starting deployment..."
 # 2️⃣ Build Angular
 echo "🔧 Building Angular..."
 cd "$PROJECT_DIR/$ANGULAR_DIR"
+npm i 
 npm run build --prod
 echo "✅ Angular build complete!"
 echo "📂 Copying Angular build to /var/www..."
