@@ -24,7 +24,7 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(helmet());
 app.use(cors({
-  origin: 'http://localhost:4200',
+  origin: process.env.NODE_ENV === 'production' ? 'https://verly.nicoblog.dev' : 'http://localhost:4200',
   credentials: true,
 })); // default: allow all origins.
 
@@ -43,7 +43,7 @@ if (process.env.AUTO_INIT_DB === 'true') {
 
 // Mount routes at /api
 app.use('/api', routes); 
-app.use((err, res) => {
+app.use((req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
 
