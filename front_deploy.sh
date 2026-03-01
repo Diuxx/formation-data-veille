@@ -39,7 +39,7 @@ sudo cp -r "$ANGULAR_BUILD_DIR"/* "$ANGULAR_WWW_DIR"
 echo "🧩 Installing Nginx config..."
 sudo cp "$ANGULAR_NGINX_CONF_SRC" "$ANGULAR_NGINX_CONF_DST"
 if [ ! -L "$ANGULAR_NGINX_ENABLED" ]; then
-  sudo ln -s "$ANGULAR_NGINX_CONF_DST" "$ANGULARANGULAR_NGINX_ENABLED_NGINX_ENABLED"
+  sudo ln -s "$ANGULAR_NGINX_CONF_DST" "$ANGULAR_NGINX_ENABLED"
 fi
 
 echo "🔍 Testing Nginx configuration..."
