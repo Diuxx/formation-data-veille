@@ -17,6 +17,15 @@ API_ENV_FILE="/home/ubuntu/envs/.env"
 # SSL Variables
 DOMAIN="api.nicoblog.dev"
 EMAIL="nicolasmarmot@gmail.com"
+FORCE_SSL_RESET=false
+
+for arg in "$@"; do
+  case "$arg" in
+    -ssl)
+      FORCE_SSL_RESET=true
+      ;;
+  esac
+done
 
 echo "🚀 Starting deployment..."
 
@@ -61,6 +70,11 @@ echo "♻️ Reloading Nginx..."
 sudo systemctl reload nginx
 
 echo "Applying SSL certificate with Certbot..."
+if [ "$FORCE_SSL_RESET" = true ]; then
+  echo "🧹 -ssl détecté: suppression de /etc/letsencrypt/live/$DOMAIN"
+  sudo rm -rf "/etc/letsencrypt/live/$DOMAIN"
+fi
+
 if [ ! -d "/etc/letsencrypt/live/$DOMAIN" ]; then
   echo "🔐 No SSL certificate found, generating one..."
 
