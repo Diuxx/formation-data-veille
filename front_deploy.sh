@@ -28,7 +28,7 @@ echo "🚀 Starting deployment..."
 echo "🔧 Building Angular..."
 cd "$PROJECT_DIR/$ANGULAR_DIR"
 npm i 
-npm run build --prod
+npm run build-prod
 echo "✅ Angular build complete!"
 echo "📂 Copying Angular build to /var/www..."
 sudo rm -rf "$ANGULAR_WWW_DIR"
