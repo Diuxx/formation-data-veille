@@ -10,7 +10,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "archi-angular": {
+    "verly": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -65,10 +65,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "archi-angular:build:production"
+              "buildTarget": "verly:build:production"
             },
             "development": {
-              "buildTarget": "archi-angular:build:development"
+              "buildTarget": "verly:build:development"
             }
           },
           "defaultConfiguration": "development"
