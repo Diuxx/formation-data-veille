@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "verly_api",
-      cwd: "/var/www/verly_api",
+      cwd: "/home/ubuntu/verly_api",
 
       // Démarrage via npm (compatible Nest/Express/Fastify)
       script: "npm",
@@ -20,9 +20,13 @@ module.exports = {
       time: true,
 
       // Robustesse
-      autorestart: true,
+      min_uptime: "20000",
       max_restarts: 10,
       restart_delay: 2000,
+
+      stop_exit_code: [0],
+
+      autorestart: true,
 
       // Garde-fou mémoire
       max_memory_restart: "300M",

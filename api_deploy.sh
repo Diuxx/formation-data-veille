@@ -21,7 +21,8 @@ echo "🚀 Starting deployment..."
 
 # Stopping API with PM2 before deployment
 echo "⏹️ Stopping API with PM2..."
-pm2 stop verly_api || true # Ignore error if not running
+# pm2 stop verly_api || true # Ignore error if not running
+pm2 delete verly_api || true
 
 sudo rm -rf "$API_WWW_DIR"
 sudo mkdir -p "$API_WWW_DIR"
