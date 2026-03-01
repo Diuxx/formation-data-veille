@@ -7,7 +7,7 @@ PROJECT_DIR="$(pwd)"
 
 # API variables
 API_DIR="api"
-API_WWW_DIR="/var/www/verly_api"
+API_WWW_DIR="/home/ubuntu/verly_api"
 API_NGINX_CONF_SRC="$PROJECT_DIR/infra/nginx/verly_api.conf"
 API_NGINX_CONF_DST="/etc/nginx/sites-available/verly_api.conf"
 API_NGINX_ENABLED="/etc/nginx/sites-enabled/verly_api.conf"
