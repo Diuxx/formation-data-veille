@@ -6,7 +6,7 @@ module.exports = {
 
       // Démarrage via npm (compatible Nest/Express/Fastify)
       script: "npm",
-      args: "run start:prod", // ou "run start:prod"
+      args: "run start",
 
       env: {
         NODE_ENV: "production",

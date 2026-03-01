@@ -24,7 +24,9 @@ sudo mkdir -p "$API_WWW_DIR"
 sudo cp -r "$PROJECT_DIR/$API_DIR/"* "$API_WWW_DIR"
 
 sudo mkdir -p "$API_LOG_DIR"
-# sudo chown -R ubuntu:ubuntu "$API_LOG_DIR"
+
+sudo chown -R ubuntu:ubuntu "$API_LOG_DIR"
+sudo chown -R ubuntu:ubuntu "$API_WWW_DIR"
 
 echo "🔧 Building API..."
 cd "$API_WWW_DIR"
@@ -50,7 +52,6 @@ if [ ! -d "/etc/letsencrypt/live/$DOMAIN" ]; then
 
   sudo certbot --nginx \
     -d "$DOMAIN" \
-    -d "www.$DOMAIN" \
     --non-interactive \
     --agree-tos \
     --email "$EMAIL" \
@@ -63,7 +64,7 @@ fi
 echo "🚀 Starting API with PM2..."
 
 cd "$API_WWW_DIR"
-pm2 start ecosystem.config.js # Configure l’auto-start au reboot
+pm2 start ecosystem.config.cjs # Configure l’auto-start au reboot
 pm2 status # Voir l’état global (online, stopped, crashed)
 pm2 save # Sauvegarde l’état actuel pour redémarrage serveur
 
