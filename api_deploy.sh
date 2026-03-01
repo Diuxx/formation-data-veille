@@ -12,6 +12,7 @@ API_NGINX_CONF_SRC="$PROJECT_DIR/infra/nginx/verly_api.conf"
 API_NGINX_CONF_DST="/etc/nginx/sites-available/verly_api.conf"
 API_NGINX_ENABLED="/etc/nginx/sites-enabled/verly_api.conf"
 API_LOG_DIR="/home/ubuntu/logs"
+API_ENV_FILE="/home/ubuntu/envs/.env"
 
 # SSL Variables
 DOMAIN="api.nicoblog.dev"
@@ -36,6 +37,14 @@ sudo chown -R ubuntu:ubuntu "$API_WWW_DIR"
 echo "🔧 Building API..."
 cd "$API_WWW_DIR"
 npm i
+
+# moving env file
+if [ -f "$API_ENV_FILE" ]; then
+  sudo cp "$API_ENV_FILE" "$API_WWW_DIR/.env"
+fi
+
+# generate prisma client
+npx prisma generate
 
 # nginx
 cd "$PROJECT_DIR"
