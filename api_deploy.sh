@@ -21,7 +21,7 @@ echo "🚀 Starting deployment..."
 
 sudo rm -rf "$API_WWW_DIR"
 sudo mkdir -p "$API_WWW_DIR"
-sudo cp -r "$API_BUILD_DIR"/* "$API_WWW_DIR"
+sudo cp -r "$PROJECT_DIR/$API_DIR/"* "$API_WWW_DIR"
 
 sudo mkdir -p "$API_LOG_DIR"
 # sudo chown -R ubuntu:ubuntu "$API_LOG_DIR"

@@ -14,8 +14,8 @@ module.exports = {
       },
 
       // Logs
-      out_file: "/home/ubuntu/logs/api.out.log",
-      error_file: "/home/ubuntu/logs/api.err.log",
+      out_file: "/home/ubuntu/logs/verly_api.out.log",
+      error_file: "/home/ubuntu/logs/verly_api.err.log",
       merge_logs: true,
       time: true,
 
