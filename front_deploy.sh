@@ -13,10 +13,6 @@ ANGULAR_NGINX_CONF_SRC="$PROJECT_DIR/infra/nginx/verly_front.conf"
 ANGULAR_NGINX_CONF_DST="/etc/nginx/sites-available/verly_front.conf"
 ANGULAR_NGINX_ENABLED="/etc/nginx/sites-enabled/verly_front.conf"
 
-# API variables
-
-# Cron job variables
-
 # SSL Variables
 DOMAIN="verly.nicoblog.dev"
 EMAIL="nicolasmarmot@gmail.com"
