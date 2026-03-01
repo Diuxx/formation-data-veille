@@ -21,7 +21,7 @@ FORCE_SSL_RESET=false
 
 for arg in "$@"; do
   case "$arg" in
-    -ssl)
+    --ssl)
       FORCE_SSL_RESET=true
       ;;
   esac
