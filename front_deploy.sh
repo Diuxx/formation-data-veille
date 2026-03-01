@@ -18,8 +18,7 @@ ANGULAR_NGINX_ENABLED="/etc/nginx/sites-enabled/verly_front.conf"
 # Cron job variables
 
 # SSL Variables
-FRONT_DOMAIN="verly.nicoblog.dev"
-BACK_DOMAIN="api.nicoblog.dev"
+DOMAIN="verly.nicoblog.dev"
 EMAIL="nicolasmarmot@gmail.com"
 
 echo "🚀 Starting deployment..."
@@ -53,8 +52,8 @@ sudo systemctl reload nginx
 #   echo "🔐 No SSL certificate found, generating one..."
 
 #   sudo certbot --nginx \
-#     -d "$FRONT_DOMAIN" \
-#     -d "www.$FRONT_DOMAIN" \
+#     -d "$DOMAIN" \
+#     -d "www.$DOMAIN" \
 #     --non-interactive \
 #     --agree-tos \
 #     --email "$EMAIL" \

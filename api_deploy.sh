@@ -8,3 +8,9 @@ PROJECT_DIR="$(pwd)"
 # API variables
 API_DIR="api"
 API_WWW_DIR="/var/www/verly_api"
+
+
+
+# SSL Variables
+DOMAIN="api.nicoblog.dev"
+EMAIL="nicolasmarmot@gmail.com"
