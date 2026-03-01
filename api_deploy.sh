@@ -19,6 +19,10 @@ EMAIL="nicolasmarmot@gmail.com"
 
 echo "🚀 Starting deployment..."
 
+# Stopping API with PM2 before deployment
+echo "⏹️ Stopping API with PM2..."
+pm2 stop verly_api || true # Ignore error if not running
+
 sudo rm -rf "$API_WWW_DIR"
 sudo mkdir -p "$API_WWW_DIR"
 sudo cp -r "$PROJECT_DIR/$API_DIR/"* "$API_WWW_DIR"
