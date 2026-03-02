@@ -25,6 +25,11 @@ export const routes: Routes = [
     loadComponent: () => import('@layouts/main-layout/main-layout.component').then(m => m.MainLayout),
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'home'
+      },
+      {
         path: 'home',
         loadComponent: () => import('@features/pages/home/home.component').then(m => m.Home)
       },
