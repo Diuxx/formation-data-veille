@@ -22,9 +22,14 @@ footer {
   .footer-contact { align-items: flex-start;justify-content: center;flex-direction: column; }
 }
 
+footer > .footer-mid {
+  display: grid;
+  place-items: center; /* centre le divider dans la cellule */
+}
+
 .divider-vertical {
   width: 1px;
-  height: 25px;
+  height: 35px;
   background: #ccc;
   // align-self: stretch;
 }
