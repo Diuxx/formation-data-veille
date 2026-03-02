@@ -1,59 +1,87 @@
 
-
 :host {
-  display: flex;
+  display: block;
+}
+
+footer {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  min-height: 70px;
   border-top: var(--app-header-border);
   background-color: var(--app-header-background);
   color: var(--app-text-color);
-  height: 90px;
-  width: 100%;
-  // margin: 0 20px 0 20px;
+  gap: 20px;
+  padding: 5px 15px 0 15px;
+  align-items: stretch;
 
-  footer {
+  > div {
     display: flex;
-    justify-content: space-between;
-    padding: 15px 30px 25px 30px;
-    width: 100%;
-    font-size: 0.7em;
-    .footer-left {
-      flex-direction: column;
-      display: flex;
-      gap: 5px;
-      .logo {
-        display: flex;
-        gap: 5px;
+    justify-content: center;
+  }
+  .footer-left { align-items: flex-end; }
+  .footer-contact { align-items: flex-start;justify-content: center;flex-direction: column; }
+}
+
+.divider-vertical {
+  width: 1px;
+  height: 25px;
+  background: #ccc;
+  // align-self: stretch;
+}
+
+.footer-left {
+  flex-direction: column;
+  display: flex;
+  gap: 5px;
+  .logo {
+    display: flex;
+    gap: 5px;
+  }
+  img { width: 32px; }
+  p {
+    align-self: center;
+  }
+}
+
+.footer-contact {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    li { padding-top: 5px; }
+    li a {
+      color: var(--app-text-color);
+      text-decoration: none;
+      margin-top: 2px;
+      &:hover {
+        color: var(--app-blue);
       }
-      img { width: 32px; }
-      p {
-        align-self: center;
-        // font-weight: bold;
-      }
-    }
-    .footer-contact {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding-top: 15px;
-      ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        gap: 18px;
-        li a {
-          color: var(--app-text-color);
-          text-decoration: none;
-          &:hover {
-            color: var(--app-blue);
-          }
-        }
-      }
-    }
-    .contact-icon img {
-        width: 16px;
-        height: 16px;
-        fill: currentColor;
-        stroke-width: 1.5;
     }
   }
+  p {
+    font-size: 0.7em;
+  }
+}
+.contact-icon img {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    stroke-width: 1.5;
+    &:hover {
+      animation: vibrate 0.2s linear infinite;
+    }
+}
+
+@keyframes vibrate {
+  0%   { transform: translate(0); }
+  25%  { transform: translate(1px, -1px); }
+  50%  { transform: translate(-1px, 1px); }
+  75%  { transform: translate(1px, 1px); }
+  100% { transform: translate(-1px, -1px); }
 }
