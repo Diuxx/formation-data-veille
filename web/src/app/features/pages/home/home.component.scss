@@ -105,12 +105,15 @@
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      &:hover {
+      max-height: calc(0.85rem * 1.25 * 3);
+      transition: max-height 0.65s ease;
+    }
+
+    &:hover p {
         text-decoration: underline;
-        line-clamp: none;
-        -webkit-line-clamp: none;
-        -webkit-box-orient: vertical;
-      }
+        -webkit-line-clamp: unset;
+        line-clamp: unset;
+        max-height: 520px;
     }
 
     .tags {
