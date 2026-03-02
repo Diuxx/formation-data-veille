@@ -30,30 +30,9 @@ async function main() {
       throw new Error("Unexpected database response");
     }
 
-    let stackId = await getStackIdByName('Node.js', conn);
-    if (!stackId) {
-      throw new Error("Stack 'Node.js' not found in database");
-    }
-
-    let database = await getDbLastNodeReleases(stackId, conn);
-    let data = await getLastNodeReleases(database);
-
-    console.log(data);
-
-    for (const release of data) {
-      console.log(`Generating summary for ${release.version}...`);
-      const summary = await generateSummary(release.description);
-      release.summary = summary;
-      console.log(`Summary for ${release.version}:\n${summary}\n`);
-    }
-    
-    // save to database or do something with the data
-    if (data.length > 0) {
-      await saveToDatabase(data, stackId, conn);
-    } 
-    else {
-      console.log("No new releases to save to database.");
-    }
+    await processStack('Node.js', conn, getLastNodeReleases);
+    await processStack('Angular', conn, getLastAngularReleases);
+    await processStack('MariaDB', conn, getLastMariaDbReleases);
 
     process.exit(0);
   } 
@@ -113,7 +92,33 @@ async function getStackIdByName(name, conn) {
   return rows[0]?.id ?? null;
 }
 
-async function getDbLastNodeReleases(id, conn) {
+async function processStack(stackName, conn, fetchReleasesFn) {
+  const stackId = await getStackIdByName(stackName, conn);
+  if (!stackId) {
+    console.warn(`Stack '${stackName}' not found in database, skipping...`);
+    return;
+  }
+
+  const database = await getDbLastReleases(stackId, conn);
+  const data = await fetchReleasesFn(database);
+
+  console.log(`[${stackName}] New releases found: ${data.length}`);
+
+  for (const release of data) {
+    console.log(`[${stackName}] Generating summary for ${release.version}...`);
+    const summary = await generateSummary(release.description);
+    release.summary = summary;
+  }
+
+  if (data.length > 0) {
+    await saveToDatabase(data, stackId, conn);
+  }
+  else {
+    console.log(`[${stackName}] No new releases to save to database.`);
+  }
+}
+
+async function getDbLastReleases(id, conn) {
   const rows = await conn.query(`
     SELECT sv.stackId, sv.version, sv.releaseDate 
     FROM template_db.stacks s
@@ -124,7 +129,6 @@ async function getDbLastNodeReleases(id, conn) {
 
   return rows;
 }
-
 
 async function getLastNodeReleases(database, limit = 4) {
   const [ghReleases, nodeRes] = await Promise.all([
@@ -143,8 +147,8 @@ async function getLastNodeReleases(database, limit = 4) {
   const dbSet = new Set((database ?? []).map(d => d.version));
 
   return ghReleases
-    .filter(f => desiredSet.has(f.tag_name))
-    .filter(f => !dbSet.has(f.tag_name))
+    .filter(release => desiredSet.has(release.tag_name))
+    .filter(release => !dbSet.has(release.tag_name))
     .map(r => ({
       version: r.tag_name,
       name: r.name,
@@ -155,6 +159,63 @@ async function getLastNodeReleases(database, limit = 4) {
       summary: '', // To be filled later
       dbId: ''
   }));
+}
+
+async function getLastAngularReleases(database, limit = 4) {
+  const angularUrl = process.env.ANGULAR_URL || 'https://api.github.com/repos/angular/angular/releases';
+  const angularDistUrl = process.env.ANGULAR_DIST_URL || 'https://registry.npmjs.org/@angular/cli';
+
+  const [releases, angularDist] = await Promise.all([
+    fetch(angularUrl).then(res => res.json()),
+    fetch(angularDistUrl).then(res => res.json())
+  ]);
+
+  const distTags = angularDist?.['dist-tags'] ?? {};
+  const ltsVersions = Object.entries(distTags)
+    .filter(([tag]) => /lts/i.test(tag))
+    .map(([, version]) => normalizeVersion(version));
+  const ltsSet = new Set(ltsVersions);
+
+  const dbSet = new Set((database ?? []).map(d => normalizeVersion(d.version)));
+
+  const latestReleases = releases
+    .filter(release => !release.draft && !release.prerelease)
+    .filter(release => !dbSet.has(normalizeVersion(release.tag_name)))
+    .slice(0, limit);
+
+  return latestReleases
+    .map(release => ({
+      version: release.tag_name,
+      name: release.name,
+      url: release.html_url,
+      date: release.published_at,
+      description: release.body,
+      isLts: ltsSet.has(normalizeVersion(release.tag_name)),
+      summary: '',
+      dbId: ''
+    }));
+}
+
+async function getLastMariaDbReleases(database, limit = 4) {
+  const mariaDbUrl = process.env.MARIADB_URL || 'https://api.github.com/repos/MariaDB/server/releases';
+  const releases = await fetch(mariaDbUrl).then(res => res.json());
+
+  const dbSet = new Set((database ?? []).map(d => d.version));
+
+  return releases
+    .filter(release => !release.draft && !release.prerelease)
+    .slice(0, limit)
+    .filter(release => !dbSet.has(release.tag_name))
+    .map(release => ({
+      version: release.tag_name,
+      name: release.name,
+      url: release.html_url,
+      date: release.published_at,
+      description: release.body,
+      isLts: false,
+      summary: '',
+      dbId: ''
+    }));
 }
 
 async function generateSummary(info = '') {
@@ -206,4 +267,8 @@ function formatDateForMariaDB(dateString) {
     .toISOString()
     .slice(0, 19)
     .replace("T", " ");
+}
+
+function normalizeVersion(version = '') {
+  return String(version).trim().replace(/^v/i, '');
 }

@@ -15,7 +15,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 INSERT INTO stacks (id, name, description, icon)
 VALUES
   (UUID(), 'Angular', 'Frontend framework for building SPA and enterprise apps.', 'https://angular.io/assets/images/logos/angular/angular.svg'),
-  (UUID(), 'Node.js', 'JavaScript runtime built on Chrome\'s V8 JavaScript engine.', 'https://nodejs.org/static/images/logo.svg');
+  (UUID(), 'Node.js', 'JavaScript runtime built on Chrome\'s V8 JavaScript engine.', 'https://nodejs.org/static/images/logo.svg'),
+  (UUID(), 'MariaDB', 'Relational database management system.', 'https://mariadb.org/wp-content/themes/twentynineteen-child/icons/logo_seal.svg');
 
 -- Tool types
 INSERT INTO tool_types (id, name, description)
