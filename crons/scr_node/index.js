@@ -121,8 +121,8 @@ async function processStack(stackName, conn, fetchReleasesFn) {
 async function getDbLastReleases(id, conn) {
   const rows = await conn.query(`
     SELECT sv.stackId, sv.version, sv.releaseDate 
-    FROM template_db.stacks s
-    INNER JOIN template_db.stack_versions sv on sv.stackId = s.id
+    FROM stacks s
+    INNER JOIN stack_versions sv on sv.stackId = s.id
     WHERE s.id = ?
     ORDER BY sv.releaseDate DESC   
   `, [id]);
@@ -130,7 +130,7 @@ async function getDbLastReleases(id, conn) {
   return rows;
 }
 
-async function getLastNodeReleases(database, limit = 4) {
+async function getLastNodeReleases(database, limit = 3) {
   const [ghReleases, nodeRes] = await Promise.all([
     fetch(process.env.NODE_URL).then(res => res.json()),
     fetch(process.env.NODE_DIST_URL).then(res => res.json())
@@ -145,10 +145,11 @@ async function getLastNodeReleases(database, limit = 4) {
 
   // 2) Index DB pour éviter O(n²)
   const dbSet = new Set((database ?? []).map(d => d.version));
-
-  return ghReleases
+  const newReleases = ghReleases
     .filter(release => desiredSet.has(release.tag_name))
-    .filter(release => !dbSet.has(release.tag_name))
+    .filter(release => !dbSet.has(release.tag_name));
+
+  return newReleases
     .map(r => ({
       version: r.tag_name,
       name: r.name,
@@ -161,7 +162,7 @@ async function getLastNodeReleases(database, limit = 4) {
   }));
 }
 
-async function getLastAngularReleases(database, limit = 4) {
+async function getLastAngularReleases(database, limit = 3) {
   const angularUrl = process.env.ANGULAR_URL || 'https://api.github.com/repos/angular/angular/releases';
   const angularDistUrl = process.env.ANGULAR_DIST_URL || 'https://registry.npmjs.org/@angular/cli';
 
@@ -174,14 +175,14 @@ async function getLastAngularReleases(database, limit = 4) {
   const ltsVersions = Object.entries(distTags)
     .filter(([tag]) => /lts/i.test(tag))
     .map(([, version]) => normalizeVersion(version));
-  const ltsSet = new Set(ltsVersions);
 
+  const ltsSet = new Set(ltsVersions);
   const dbSet = new Set((database ?? []).map(d => normalizeVersion(d.version)));
 
   const latestReleases = releases
     .filter(release => !release.draft && !release.prerelease)
-    .filter(release => !dbSet.has(normalizeVersion(release.tag_name)))
-    .slice(0, limit);
+    .slice(0, limit)
+    .filter(release => !dbSet.has(normalizeVersion(release.tag_name)));
 
   return latestReleases
     .map(release => ({
@@ -196,7 +197,7 @@ async function getLastAngularReleases(database, limit = 4) {
     }));
 }
 
-async function getLastMariaDbReleases(database, limit = 4) {
+async function getLastMariaDbReleases(database, limit = 3) {
   const mariaDbUrl = process.env.MARIADB_URL || 'https://api.github.com/repos/MariaDB/server/releases';
   const releases = await fetch(mariaDbUrl).then(res => res.json());
 
